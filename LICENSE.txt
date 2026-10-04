@@ -1,6 +1,6 @@
 The MIT License (MIT)
 
-Copyright (c) 2026 bayyu (https://codepen.io/editor/bydyaa/pen/01a104b4-e237-74b5-8e21-5adc2c1c9a38)
+Copyright (c) 2026 bayyu
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
