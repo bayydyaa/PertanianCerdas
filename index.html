@@ -626,6 +626,46 @@ body.admin .kartu.sorot .tanda{max-width:calc(100% - 96px)}
 .f-foto-aksi{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-width:0}
 .dlg .ket{font-size:12.500px;color:#8f4d10;min-height:0;margin-top:6px}
 .dlg .ket:empty{display:none}
+
+/* ---------- Deretan sorotan ---------- */
+.sorotan{display:flex;flex-direction:column;gap:26px;margin-bottom:44px}
+.rel-kepala{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
+.rel-judul{display:flex;align-items:center;gap:10px;font-size:clamp(19px,2.200vw,24px);font-weight:800;letter-spacing:-.015em;color:var(--daun);line-height:1.15}
+.rel-judul small{font-size:12.500px;font-weight:700;color:var(--redup);background:rgba(15,61,36,.08);border-radius:999px;padding:2px 9px}
+.rel-ikon{display:grid;place-items:center;width:34px;height:34px;border-radius:11px;color:#3a2a05;background:linear-gradient(135deg,#f6e3ae,#d6aa54);box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 8px 14px -8px rgba(120,84,10,.8)}
+.rel-ikon svg{width:18px;height:18px}
+.s-laris .rel-ikon{color:#fff;background:linear-gradient(135deg,#f0683f,#c8321f);box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 8px 14px -8px rgba(160,40,20,.9)}
+.s-viral .rel-ikon{color:#fff;background:linear-gradient(135deg,#8d63e6,#5b34b3);box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 8px 14px -8px rgba(70,40,150,.9)}
+.s-milik .rel-ikon{color:#fff;background:linear-gradient(135deg,#2f9b52,#176233);box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 8px 14px -8px rgba(15,61,36,.9)}
+.anim .rel.tampak .rel-ikon{animation:lompat .7s .2s var(--pegas) backwards}
+.rel-nav{display:flex;gap:6px;flex:none}
+.rel-nav[hidden]{display:none}
+.rel-nav button{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;color:var(--daun);background:rgba(255,255,255,.75);border:1px solid rgba(15,61,36,.14);transition:background .2s,transform .3s var(--pegas),opacity .25s}
+.rel-nav button:hover{background:#fff;transform:scale(1.08)}
+.rel-nav button:active{transform:scale(.92)}
+.rel-nav button:disabled{opacity:.35;cursor:default;transform:none}
+.rel-nav svg{width:18px;height:18px}
+[dir="rtl"] .rel-nav svg{transform:scaleX(-1)}
+.rel-jalur{display:flex;gap:14px;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;scrollbar-width:none;padding:6px 4px 20px;margin:0 -4px;scroll-padding-inline:4px;-webkit-overflow-scrolling:touch}
+.rel-jalur::-webkit-scrollbar{display:none}
+.rel-jalur:focus-visible{outline-offset:-2px}
+.rel-jalur .kartu{flex:0 0 212px;scroll-snap-align:start}
+.rel-jalur .gbr{height:150px}
+.rel-jalur .kemas{height:118px;margin-top:20px}
+.rel-jalur .etiket b{font-size:9px}
+.rel-jalur .etiket em{font-size:8px;padding:0 3px}
+.rel-jalur .etiket .emo{font-size:24px}
+.rel-jalur .k-alat .emo{font-size:52px}
+.rel-jalur .k-benih .emo{height:35px;line-height:35px}
+.rel-jalur .lencana,.rel-jalur .dus{display:none}
+.rel-jalur .isi h3{font-size:14px}
+@media (max-width:520px){
+  .sorotan{gap:20px;margin-bottom:32px}
+  .rel-jalur{gap:10px;padding-bottom:16px}
+  .rel-jalur .kartu{flex-basis:164px}
+  .rel-ikon{width:30px;height:30px;border-radius:10px}
+  .rel-nav button{width:34px;height:34px}
+}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
 </style>
 <script>
@@ -683,6 +723,8 @@ d.classList.add("anim");setTimeout(function(){if(!window.__amtSiap)d.classList.r
 </header>
 
 <main class="katalog wrap" id="katalog">
+  <section class="sorotan" id="sorotan" hidden></section>
+
   <div class="kepala" data-muncul>
     <h2 data-t="katalog">Katalog produk</h2>
     <p id="ringkas"></p>
@@ -815,7 +857,7 @@ d.classList.add("anim");setTimeout(function(){if(!window.__amtSiap)d.classList.r
     <input id="fNama" autocomplete="off" placeholder="mis. Gramoxone 276SL">
     <label for="fMerek">Merek <small>(opsional, biasanya untuk benih)</small></label>
     <input id="fMerek" autocomplete="off" placeholder="mis. Panah Merah">
-    <label for="fSorot">Label sorotan <small>(produk berlabel tampil paling atas)</small></label>
+    <label for="fSorot">Label sorotan <small>(tampil di deretan atas katalog)</small></label>
     <select id="fSorot">
       <option value="">Tanpa label</option>
       <option value="unggulan">Unggulan</option>
@@ -889,16 +931,7 @@ const T = {
     lokasi: "Lokasi toko", lokasiP: "Datang langsung ke toko atau hubungi kami lewat WhatsApp.", alamat: "Alamat", kontak: "WhatsApp",
     bukaPeta: "Buka di Google Maps", petaJudul: "Peta lokasi toko", kaki: "Toko pertanian di Palu, Sulawesi Tengah.", waAria: "Chat WhatsApp",
     lain: "Ukuran lain",
-    pasang: "تثبيت التطبيق", pasangIOS: "على iPhone: افتح الصفحة في Safari، اضغط زر المشاركة، ثم اختر «إضافة إلى الشاشة الرئيسية».",
-    pilihan: "مختارات", sorot: {"unggulan": "مميّز", "laris": "الأكثر مبيعًا", "viral": "رائج", "milik": "منتجنا"},
-    pilihan: "推荐", sorot: {"unggulan": "精选", "laris": "热销", "viral": "爆款", "milik": "自有产品"},
-    pilihan: "Highlights", sorot: {"unggulan": "Featured", "laris": "Best seller", "viral": "Trending", "milik": "Our product"},
-    pilihan: "Pilihan", sorot: {"unggulan": "Pilihan utama", "laris": "Paling laris", "viral": "Tengah viral", "milik": "Produk kami"},
-    pilihan: "Pilihan", sorot: {"unggulan": "Unggulan", "laris": "Terlaris", "viral": "Lagi viral", "milik": "Produk kami"},
-    pasang: "安装应用", pasangIOS: "在 iPhone 上：用 Safari 打开，点击“分享”按钮，然后选择“添加到主屏幕”。",
-    pasang: "Install app", pasangIOS: "On iPhone: open in Safari, tap the Share button, then choose “Add to Home Screen”.",
-    pasang: "Pasang aplikasi", pasangIOS: "Di iPhone: buka dengan Safari, tekan butang Kongsi, kemudian pilih “Tambah ke Skrin Utama”.",
-    pasang: "Pasang aplikasi", pasangIOS: "Di iPhone: buka lewat Safari, tekan tombol Bagikan, lalu pilih “Tambahkan ke Layar Utama”."
+    pasang: "Pasang aplikasi", pasangIOS: "Di iPhone: buka lewat Safari, tekan tombol Bagikan, lalu pilih “Tambahkan ke Layar Utama”.", pilihan: "Pilihan", sebelum: "Sebelumnya", berikut: "Berikutnya", sorot: {"unggulan": "Unggulan", "laris": "Terlaris", "viral": "Lagi viral", "milik": "Produk kami"}
   },
   ms: {
     judul: "E-Katalog | CV Azzahra Mutiara Tani", tag: "Kedai Pertanian", daftar: "Senarai pertanyaan", bahasa: "Bahasa",
@@ -918,7 +951,8 @@ const T = {
     kurang: "Kurangkan {x}", lagi: "Tambah {x}",
     lokasi: "Lokasi kedai", lokasiP: "Datang terus ke kedai atau hubungi kami melalui WhatsApp.", alamat: "Alamat", kontak: "WhatsApp",
     bukaPeta: "Buka di Google Maps", petaJudul: "Peta lokasi kedai", kaki: "Kedai pertanian di Palu, Sulawesi Tengah, Indonesia.", waAria: "Sembang WhatsApp",
-    lain: "Saiz lain"
+    lain: "Saiz lain",
+    pasang: "Pasang aplikasi", pasangIOS: "Di iPhone: buka dengan Safari, tekan butang Kongsi, kemudian pilih “Tambah ke Skrin Utama”.", pilihan: "Pilihan", sebelum: "Sebelumnya", berikut: "Seterusnya", sorot: {"unggulan": "Pilihan utama", "laris": "Paling laris", "viral": "Tengah viral", "milik": "Produk kami"}
   },
   en: {
     judul: "E-Catalog | CV Azzahra Mutiara Tani", tag: "Farm Supply Store", daftar: "Inquiry list", bahasa: "Language",
@@ -938,7 +972,8 @@ const T = {
     kurang: "Remove one {x}", lagi: "Add one {x}",
     lokasi: "Store location", lokasiP: "Visit the store or reach us on WhatsApp.", alamat: "Address", kontak: "WhatsApp",
     bukaPeta: "Open in Google Maps", petaJudul: "Store location map", kaki: "Farm supply store in Palu, Central Sulawesi, Indonesia.", waAria: "Chat on WhatsApp",
-    lain: "Other size"
+    lain: "Other size",
+    pasang: "Install app", pasangIOS: "On iPhone: open in Safari, tap the Share button, then choose “Add to Home Screen”.", pilihan: "Highlights", sebelum: "Previous", berikut: "Next", sorot: {"unggulan": "Featured", "laris": "Best seller", "viral": "Trending", "milik": "Our product"}
   },
   zh: {
     judul: "电子产品目录 | CV Azzahra Mutiara Tani", tag: "农资店", daftar: "询价清单", bahasa: "语言",
@@ -958,7 +993,8 @@ const T = {
     kurang: "减少 {x}", lagi: "增加 {x}",
     lokasi: "门店位置", lokasiP: "欢迎到店选购，或通过 WhatsApp 联系我们。", alamat: "地址", kontak: "WhatsApp",
     bukaPeta: "在 Google 地图中打开", petaJudul: "门店位置地图", kaki: "位于印度尼西亚中苏拉威西省帕卢市的农资店。", waAria: "WhatsApp 咨询",
-    lain: "其他规格"
+    lain: "其他规格",
+    pasang: "安装应用", pasangIOS: "在 iPhone 上：用 Safari 打开，点击“分享”按钮，然后选择“添加到主屏幕”。", pilihan: "推荐", sebelum: "上一个", berikut: "下一个", sorot: {"unggulan": "精选", "laris": "热销", "viral": "爆款", "milik": "自有产品"}
   },
   ar: {
     judul: "الكتالوج الإلكتروني | CV Azzahra Mutiara Tani", tag: "متجر المستلزمات الزراعية", daftar: "قائمة الاستفسار", bahasa: "اللغة",
@@ -978,7 +1014,8 @@ const T = {
     kurang: "إنقاص {x}", lagi: "زيادة {x}",
     lokasi: "موقع المتجر", lokasiP: "تفضّل بزيارة المتجر أو تواصل معنا عبر واتساب.", alamat: "العنوان", kontak: "واتساب",
     bukaPeta: "افتح في خرائط Google", petaJudul: "خريطة موقع المتجر", kaki: "متجر مستلزمات زراعية في بالو، سولاويزي الوسطى، إندونيسيا.", waAria: "تواصل عبر واتساب",
-    lain: "حجم آخر"
+    lain: "حجم آخر",
+    pasang: "تثبيت التطبيق", pasangIOS: "على iPhone: افتح الصفحة في Safari، اضغط زر المشاركة، ثم اختر «إضافة إلى الشاشة الرئيسية».", pilihan: "مختارات", sebelum: "السابق", berikut: "التالي", sorot: {"unggulan": "مميّز", "laris": "الأكثر مبيعًا", "viral": "رائج", "milik": "منتجنا"}
   }
 };
 
@@ -1298,7 +1335,7 @@ const lencana = p => p[7] && IKON_SOROT[p[7]] ? `<span class="lencana s-${p[7]}"
 
 /* ---------- State ---------- */
 const $ = id => document.getElementById(id);
-const grid = $("grid"), elKat = $("kategori"), elCari = $("cari");
+const grid = $("grid"), elKat = $("kategori"), elCari = $("cari"), areaKartu = $("katalog"), elSorotan = $("sorotan");
 const PER_HALAMAN = 24;
 let kategoriAktif = -1, kata = "", tampil = PER_HALAMAN, hasil = [];
 const pilihan = new Map();           // indeks produk -> indeks ukuran/varian terpilih
@@ -1333,7 +1370,7 @@ function gantiData(baru){
   const beku = bekukan();
   PRODUK = baru; pilihan.clear(); daftar = cairkan(beku);
   hitungData(); bangunIndeks(); simpan();
-  gambarKategori(); saring(); gambarDaftar();
+  gambarKategori(); saring(); gambarDaftar(); gambarSorotan();
 }
 hitungData();
 
@@ -1367,15 +1404,74 @@ let jedaUkur;
 window.addEventListener("resize", () => { clearTimeout(jedaUkur); jedaUkur = setTimeout(() => posisiPenanda(false), 120); });
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => posisiPenanda(false));
 
+/* ---------- Deretan sorotan di atas katalog (geser otomatis, bisa digeser manual) ---------- */
+const URUTAN_SOROT = ["unggulan", "laris", "milik", "viral"];
+const panah = arah => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.400" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${arah < 0 ? "m14.500 6-6 6 6 6" : "m9.500 6 6 6-6 6"}"/></svg>`;
+function gambarSorotan(){
+  let html = "";
+  URUTAN_SOROT.forEach(kunci => {
+    const isi = []; PRODUK.forEach((p, i) => { if (p[7] === kunci) isi.push(i); });
+    if (!isi.length) return;
+    const nama = T[bahasa].sorot[kunci];
+    html += `<div class="rel" data-muncul>
+      <div class="rel-kepala">
+        <h2 class="rel-judul s-${kunci}"><span class="rel-ikon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IKON_SOROT[kunci]}</svg></span>${esc(nama)}<small>${angka(isi.length)}</small></h2>
+        <div class="rel-nav"><button data-geser="-1" aria-label="${esc(t("sebelum"))}">${panah(-1)}</button><button data-geser="1" aria-label="${esc(t("berikut"))}">${panah(1)}</button></div>
+      </div>
+      <div class="rel-jalur" role="region" aria-label="${esc(nama)}" tabindex="0">${isi.map(i => kartu(i, true)).join("")}</div>
+    </div>`;
+  });
+  elSorotan.innerHTML = html; elSorotan.hidden = !html;
+  amati(elSorotan.querySelectorAll("[data-muncul]"));
+  elSorotan.querySelectorAll(".rel-jalur").forEach((j, n) => {
+    j._jedaSampai = Date.now() + 2600 + n * 900;       // tiap deretan mulai bergantian, tidak serempak
+    if (pengamatRel) pengamatRel.observe(j);
+    perbaruiNav(j);
+    j.addEventListener("scroll", () => perbaruiNav(j), { passive: true });
+  });
+}
+const RTL = () => document.documentElement.dir === "rtl";
+const lebarLangkah = j => { const k = j.querySelector(".kartu"); return k ? k.offsetWidth + parseFloat(getComputedStyle(j).columnGap || 14) : 200; };
+function perbaruiNav(j){
+  const maks = j.scrollWidth - j.clientWidth, pos = Math.abs(j.scrollLeft), nav = j.parentNode.querySelector(".rel-nav");
+  nav.hidden = maks <= 4;
+  nav.children[0].disabled = pos <= 2; nav.children[1].disabled = pos >= maks - 2;
+}
+function geserRel(j, arah, halus){
+  const maks = j.scrollWidth - j.clientWidth; if (maks <= 4) return;
+  const pos = Math.abs(j.scrollLeft), tanda = RTL() ? -1 : 1, laku = halus === false ? "auto" : "smooth";
+  if (arah > 0 && pos >= maks - 4) j.scrollTo({ left: 0, behavior: laku });            // sampai ujung: balik ke awal
+  else j.scrollBy({ left: tanda * arah * lebarLangkah(j), behavior: laku });
+}
+const pengamatRel = ("IntersectionObserver" in window) ? new IntersectionObserver(en => en.forEach(e => { e.target._tampak = e.isIntersecting; }), { threshold: 0.35 }) : null;
+const tahan = (j, ms) => { j._jedaSampai = Math.max(j._jedaSampai || 0, Date.now() + ms); };
+["pointerdown", "touchstart", "wheel", "focusin", "keydown"].forEach(ev =>
+  elSorotan.addEventListener(ev, e => { const j = e.target.closest(".rel"); if (j) tahan(j.querySelector(".rel-jalur"), 7000); }, { passive: true }));
+elSorotan.addEventListener("mouseover", e => { const j = e.target.closest(".rel"); if (j) tahan(j.querySelector(".rel-jalur"), 2500); }, { passive: true });
+elSorotan.addEventListener("click", e => {
+  const b = e.target.closest("[data-geser]"); if (!b) return;
+  const j = b.closest(".rel").querySelector(".rel-jalur"); tahan(j, 7000); geserRel(j, +b.dataset.geser);
+});
+/* geser otomatis: hanya deretan yang kelihatan, berhenti saat disentuh, saat tab disembunyikan, dan di mode admin */
+if (ANIM) setInterval(() => {
+  if (document.hidden || document.body.classList.contains("buka") || document.body.classList.contains("admin")) return;
+  const kini = Date.now();
+  elSorotan.querySelectorAll(".rel-jalur").forEach(j => {
+    if (!j._tampak || kini < (j._jedaSampai || 0)) return;
+    j._jedaSampai = kini + 3600; geserRel(j, 1);
+  });
+}, 400);
+
 /* ---------- Kartu ---------- */
-function kartu(i){
+function kartu(i, rel){
+  rel = rel === true;
   const p = PRODUK[i], v = p[3], [c1, c2] = WARNA[p[0]];
   const s = Math.min(pilihan.get(i) || 0, Math.max(v.length - 1, 0));
   const uk = v.length ? v[s][0] : "";
   const nama = namaProduk(p);
   let ukuranHTML = "";
   if (v.length > 1){
-    ukuranHTML = `<div class="ukuran"><span id="u${i}">${p[5] ? t("pilihVarian") : t("pilihUkuran")}</span><div class="pil" role="radiogroup" aria-labelledby="u${i}">` +
+    ukuranHTML = `<div class="ukuran"><span id="${rel ? "r" : "u"}${i}">${p[5] ? t("pilihVarian") : t("pilihUkuran")}</span><div class="pil" role="radiogroup" aria-labelledby="${rel ? "r" : "u"}${i}">` +
       v.map((x, n) => `<button role="radio" aria-checked="${n === s}" data-u="${n}">${esc(labelUkuran(x[0], p[5]))}</button>`).join("") + `</div></div>`;
   } else if (v.length === 1){
     ukuranHTML = `<div class="ukuran"><span>${t("ukuran")}</span><b class="satu">${esc(labelUkuran(uk, p[5]))}</b></div>`;
@@ -1384,7 +1480,7 @@ function kartu(i){
   const sumberFoto = fotoBaru.has(p[4]) ? fotoBaru.get(p[4]).url : `foto/${p[4]}.jpg${p[6] ? "?v=" + p[6] : ""}`;
   const adaFoto = fotoBaru.has(p[4]) || (PAKAI_FOTO && p[6] !== -1);
   const foto = adaFoto ? `<img class="foto-asli" src="${sumberFoto}" alt="${esc(nama)}" loading="lazy" onload="this.classList.add('ada')" onerror="this.remove()">` : "";
-  return `<article class="kartu kilau${lencana(p) ? " sorot" : ""}" data-muncul data-i="${i}" style="--c1:${c1};--c2:${c2}">
+  return `<article class="kartu kilau${lencana(p) ? " sorot" : ""}"${rel ? "" : " data-muncul"} data-i="${i}" style="--c1:${c1};--c2:${c2}">
     <div class="gbr">${gambar(p, p[5] ? "" : uk)}${foto}<span class="tanda">${esc(T[bahasa].kat[p[0]])}</span>${lencana(p)}${admin.aktif ? `<button class="edit-kartu" data-edit aria-label="Edit ${esc(p[1])}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4ZM13.500 6.500l4 4"/></svg>Edit</button>` : ""}</div>
     <div class="isi">
       <h3 dir="auto">${esc(nama)}</h3>
@@ -1407,9 +1503,6 @@ function saring(halus){
     if (q.length && !q.every(w => indeksCari[i].includes(w))) continue;
     hasil.push(i);
   }
-  /* produk berlabel selalu naik ke urutan paling atas */
-  const diSorot = i => !!(PRODUK[i][7] && IKON_SOROT[PRODUK[i][7]]);
-  hasil = hasil.filter(diSorot).concat(hasil.filter(i => !diSorot(i)));
   const isi = () => {
     grid.innerHTML = hasil.slice(0, tampil).map(kartu).join("");
     amati(grid.children);
@@ -1441,7 +1534,7 @@ const kosongkanCari = () => { elCari.value = ""; kata = ""; $("kotakCari").class
 $("hapusCari").addEventListener("click", () => { kosongkanCari(); saring(); elCari.focus(); });
 $("resetCari").addEventListener("click", () => { kosongkanCari(); kategoriAktif = -1; gambarKategori(); saring(true); });
 
-grid.addEventListener("click", e => {
+areaKartu.addEventListener("click", e => {
   const el = e.target.closest(".kartu"); if (!el) return;
   const i = +el.dataset.i, p = PRODUK[i];
   const u = e.target.closest("[data-u]");
@@ -1472,7 +1565,7 @@ grid.addEventListener("click", e => {
 
 /* gerakkan --mx (-1..1) sesuai posisi kursor: kemasan ikut miring halus */
 if (ANIM && window.matchMedia("(hover:hover) and (pointer:fine)").matches) {
-  grid.addEventListener("pointermove", e => {
+  areaKartu.addEventListener("pointermove", e => {
     const k = e.target.closest(".kartu"); if (!k) return;
     const r = k.getBoundingClientRect();
     k.style.setProperty("--mx", (((e.clientX - r.left) / r.width) * 2 - 1).toFixed(2));
@@ -1609,7 +1702,7 @@ function statusAdmin(teks, jenis){
 function masukAdmin(){
   admin.aktif = true; document.body.classList.add("admin");
   $("bilahAdmin").hidden = false;
-  if (bahasa !== "id") terapkanBahasa("id", false); else saring();
+  if (bahasa !== "id") terapkanBahasa("id", false); else { saring(); gambarSorotan(); }
   statusAdmin();
 }
 function keluarAdmin(){
@@ -1752,7 +1845,7 @@ $("hapusProduk").addEventListener("click", () => {
   fotoBaru.delete(buang[4]); fotoHapus.add(buang[4]);       // fotonya ikut dibuang dari repo
   admin.kotor++; dlgEdit.close(); gantiData(data); statusAdmin();
 });
-grid.addEventListener("click", e => {
+areaKartu.addEventListener("click", e => {
   const b = e.target.closest("[data-edit]"); if (!b || !admin.aktif) return;
   e.stopPropagation(); bukaEdit(+b.closest(".kartu").dataset.i);
 }, true);
@@ -1818,7 +1911,7 @@ function terapkanBahasa(kode, simpanPilihan){
   const peta = $("peta"), src = `https://www.google.com/maps?q=${KOORDINAT}&z=17&hl=${BAHASA[bahasa].peta}&output=embed`;
   if (peta.getAttribute("src") !== src) peta.setAttribute("src", src);
   angkaSekarang = sudahSiap ? angkaSekarang : null;
-  gambarKategori(); saring(); gambarDaftar();
+  gambarKategori(); saring(); gambarDaftar(); gambarSorotan();
   if (simpanPilihan) { try { localStorage.setItem("amt-bahasa", bahasa); } catch (e) {} }
 }
 $("bahasa").addEventListener("change", e => gantiBahasa(e.target.value));
