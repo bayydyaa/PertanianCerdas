@@ -627,29 +627,33 @@ body.admin .kartu.sorot .tanda{max-width:calc(100% - 96px)}
 .dlg .ket{font-size:12.500px;color:#8f4d10;min-height:0;margin-top:6px}
 .dlg .ket:empty{display:none}
 
-/* ---------- Deretan sorotan ---------- */
-.sorotan{display:flex;flex-direction:column;gap:26px;margin-bottom:44px}
-.rel-kepala{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
-.rel-judul{display:flex;align-items:center;gap:10px;font-size:clamp(19px,2.200vw,24px);font-weight:800;letter-spacing:-.015em;color:var(--daun);line-height:1.15}
-.rel-judul small{font-size:12.500px;font-weight:700;color:var(--redup);background:rgba(15,61,36,.08);border-radius:999px;padding:2px 9px}
-.rel-ikon{display:grid;place-items:center;width:34px;height:34px;border-radius:11px;color:#3a2a05;background:linear-gradient(135deg,#f6e3ae,#d6aa54);box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 8px 14px -8px rgba(120,84,10,.8)}
-.rel-ikon svg{width:18px;height:18px}
+/* ---------- Sorotan: tiap label jadi satu kotak yang bisa digeser, berjajar ke samping ---------- */
+.sorotan{display:flex;flex-wrap:wrap;align-items:flex-start;gap:18px;margin-bottom:44px}
+.sorotan[hidden]{display:none}
+.rel{flex:1 1 210px;max-width:330px;min-width:0}
+.rel-kepala{display:flex;align-items:center;gap:8px;margin-bottom:8px;min-height:36px}
+.rel-judul{display:flex;align-items:center;gap:9px;flex:1;min-width:0;font-size:17px;font-weight:800;letter-spacing:-.01em;color:var(--daun);line-height:1.15}
+.rel-nama{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rel-ikon{display:grid;place-items:center;flex:none;width:32px;height:32px;border-radius:10px;color:#3a2a05;background:linear-gradient(135deg,#f6e3ae,#d6aa54);box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 8px 14px -8px rgba(120,84,10,.8)}
+.rel-ikon svg{width:17px;height:17px}
 .s-laris .rel-ikon{color:#fff;background:linear-gradient(135deg,#f0683f,#c8321f);box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 8px 14px -8px rgba(160,40,20,.9)}
 .s-viral .rel-ikon{color:#fff;background:linear-gradient(135deg,#8d63e6,#5b34b3);box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 8px 14px -8px rgba(70,40,150,.9)}
 .s-milik .rel-ikon{color:#fff;background:linear-gradient(135deg,#2f9b52,#176233);box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 8px 14px -8px rgba(15,61,36,.9)}
 .anim .rel.tampak .rel-ikon{animation:lompat .7s .2s var(--pegas) backwards}
-.rel-nav{display:flex;gap:6px;flex:none}
+.rel-hitung{flex:none;font-size:12px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--redup);background:rgba(15,61,36,.08);border-radius:999px;padding:2px 8px}
+.rel-hitung[hidden]{display:none}
+.rel-nav{display:flex;gap:4px;flex:none}
 .rel-nav[hidden]{display:none}
-.rel-nav button{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;color:var(--daun);background:rgba(255,255,255,.75);border:1px solid rgba(15,61,36,.14);transition:background .2s,transform .3s var(--pegas),opacity .25s}
-.rel-nav button:hover{background:#fff;transform:scale(1.08)}
-.rel-nav button:active{transform:scale(.92)}
+.rel-nav button{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;color:var(--daun);background:rgba(255,255,255,.75);border:1px solid rgba(15,61,36,.14);transition:background .2s,transform .3s var(--pegas),opacity .25s}
+.rel-nav button:hover{background:#fff;transform:scale(1.1)}
+.rel-nav button:active{transform:scale(.9)}
 .rel-nav button:disabled{opacity:.35;cursor:default;transform:none}
-.rel-nav svg{width:18px;height:18px}
+.rel-nav svg{width:15px;height:15px}
 [dir="rtl"] .rel-nav svg{transform:scaleX(-1)}
-.rel-jalur{display:flex;gap:14px;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;scrollbar-width:none;padding:6px 4px 20px;margin:0 -4px;scroll-padding-inline:4px;-webkit-overflow-scrolling:touch}
+.rel-jalur{display:flex;gap:14px;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;scrollbar-width:none;padding:6px 6px 20px;margin:0 -6px;scroll-padding-inline:6px;-webkit-overflow-scrolling:touch}
 .rel-jalur::-webkit-scrollbar{display:none}
 .rel-jalur:focus-visible{outline-offset:-2px}
-.rel-jalur .kartu{flex:0 0 212px;scroll-snap-align:start}
+.rel-jalur .kartu{flex:0 0 100%;scroll-snap-align:start;scroll-snap-stop:always}
 .rel-jalur .gbr{height:150px}
 .rel-jalur .kemas{height:118px;margin-top:20px}
 .rel-jalur .etiket b{font-size:9px}
@@ -660,11 +664,17 @@ body.admin .kartu.sorot .tanda{max-width:calc(100% - 96px)}
 .rel-jalur .lencana,.rel-jalur .dus{display:none}
 .rel-jalur .isi h3{font-size:14px}
 @media (max-width:520px){
-  .sorotan{gap:20px;margin-bottom:32px}
-  .rel-jalur{gap:10px;padding-bottom:16px}
-  .rel-jalur .kartu{flex-basis:164px}
-  .rel-ikon{width:30px;height:30px;border-radius:10px}
-  .rel-nav button{width:34px;height:34px}
+  .sorotan{gap:14px 10px;margin-bottom:30px}
+  .rel{flex:1 1 calc(50% - 5px);max-width:calc(50% - 5px)}
+  .rel:only-child{max-width:100%}
+  .rel-judul{font-size:14px;gap:6px}
+  .rel-ikon{width:26px;height:26px;border-radius:8px}
+  .rel-ikon svg{width:14px;height:14px}
+  .rel-nav{display:none}
+  .rel-hitung{font-size:11px;padding:1px 6px}
+  .rel-jalur{gap:10px;padding:4px 4px 16px;margin:0 -4px;scroll-padding-inline:4px}
+  .rel-jalur .gbr{height:130px}
+  .rel-jalur .kemas{height:104px;margin-top:18px}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
 </style>
@@ -1405,7 +1415,7 @@ window.addEventListener("resize", () => { clearTimeout(jedaUkur); jedaUkur = set
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => posisiPenanda(false));
 
 /* ---------- Deretan sorotan di atas katalog (geser otomatis, bisa digeser manual) ---------- */
-const URUTAN_SOROT = ["unggulan", "laris", "milik", "viral"];
+const URUTAN_SOROT = ["milik", "unggulan", "laris", "viral"];
 const panah = arah => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.400" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${arah < 0 ? "m14.500 6-6 6 6 6" : "m9.500 6 6 6-6 6"}"/></svg>`;
 function gambarSorotan(){
   let html = "";
@@ -1415,7 +1425,8 @@ function gambarSorotan(){
     const nama = T[bahasa].sorot[kunci];
     html += `<div class="rel" data-muncul>
       <div class="rel-kepala">
-        <h2 class="rel-judul s-${kunci}"><span class="rel-ikon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IKON_SOROT[kunci]}</svg></span>${esc(nama)}<small>${angka(isi.length)}</small></h2>
+        <h2 class="rel-judul s-${kunci}"><span class="rel-ikon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IKON_SOROT[kunci]}</svg></span><span class="rel-nama">${esc(nama)}</span></h2>
+        <span class="rel-hitung" data-n="${isi.length}" aria-hidden="true"></span>
         <div class="rel-nav"><button data-geser="-1" aria-label="${esc(t("sebelum"))}">${panah(-1)}</button><button data-geser="1" aria-label="${esc(t("berikut"))}">${panah(1)}</button></div>
       </div>
       <div class="rel-jalur" role="region" aria-label="${esc(nama)}" tabindex="0">${isi.map(i => kartu(i, true)).join("")}</div>
@@ -1436,6 +1447,9 @@ function perbaruiNav(j){
   const maks = j.scrollWidth - j.clientWidth, pos = Math.abs(j.scrollLeft), nav = j.parentNode.querySelector(".rel-nav");
   nav.hidden = maks <= 4;
   nav.children[0].disabled = pos <= 2; nav.children[1].disabled = pos >= maks - 2;
+  const hit = j.parentNode.querySelector(".rel-hitung"), n = +hit.dataset.n;      // penunjuk "2/9"
+  hit.hidden = n <= 1;
+  hit.textContent = Math.min(n, Math.round(pos / lebarLangkah(j)) + 1) + "/" + n;
 }
 function geserRel(j, arah, halus){
   const maks = j.scrollWidth - j.clientWidth; if (maks <= 4) return;
