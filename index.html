@@ -605,6 +605,27 @@ body.admin .tanda{max-width:calc(100% - 96px)}
   .ba-aksi .ba-btn{flex:1}
   body.admin{padding-bottom:150px}
 }
+
+/* ---------- Produk sorotan ---------- */
+.lencana{position:absolute;inset-inline-end:10px;top:10px;z-index:3;display:inline-flex;align-items:center;gap:5px;max-width:calc(100% - 20px);height:26px;padding:0 10px 0 8px;border-radius:999px;font-size:11.500px;font-weight:800;white-space:nowrap;color:#3a2a05;
+  background:linear-gradient(110deg,#f6e3ae 0%,#d6aa54 35%,#fff3cf 50%,#d6aa54 65%,#f0d892 100%);background-size:260% 100%;box-shadow:0 6px 14px -6px rgba(120,84,10,.7),inset 0 1px 0 rgba(255,255,255,.7)}
+.lencana svg{width:14px;height:14px;flex:none}
+.lencana.s-laris{color:#fff;background-image:linear-gradient(110deg,#e4572e 0%,#c8321f 35%,#ff9a6b 50%,#c8321f 65%,#e4572e 100%);box-shadow:0 6px 14px -6px rgba(160,40,20,.8),inset 0 1px 0 rgba(255,255,255,.35)}
+.lencana.s-viral{color:#fff;background-image:linear-gradient(110deg,#7b4fd6 0%,#5b34b3 35%,#b79cf5 50%,#5b34b3 65%,#7b4fd6 100%);box-shadow:0 6px 14px -6px rgba(70,40,150,.8),inset 0 1px 0 rgba(255,255,255,.35)}
+.lencana.s-milik{color:#fff;background-image:linear-gradient(110deg,#24894a 0%,#176233 35%,#7fe0a0 50%,#176233 65%,#24894a 100%);box-shadow:0 6px 14px -6px rgba(15,61,36,.8),inset 0 1px 0 rgba(255,255,255,.35)}
+.anim .lencana{animation:emasJalan 5s linear infinite}
+.anim .kartu.tampak .lencana svg{animation:lompat .7s .35s var(--pegas) backwards}
+.kartu.sorot{border-color:rgba(214,170,84,.75);box-shadow:inset 0 1px 0 #fff,0 0 0 1px rgba(214,170,84,.35),0 18px 34px -20px rgba(150,105,20,.6)}
+.kartu.sorot:hover{box-shadow:inset 0 1px 0 #fff,0 0 0 1px rgba(214,170,84,.6),0 26px 40px -20px rgba(150,105,20,.7)}
+.kartu.sorot .tanda{max-width:calc(100% - 20px)}
+.kartu.sorot .lencana{top:auto;bottom:10px}
+body.admin .kartu.sorot .tanda{max-width:calc(100% - 96px)}
+.kat-bintang{width:14px;height:14px;color:var(--emas);transition:transform .5s var(--pegas),color .3s}
+.kat-pilihan[aria-pressed="true"] .kat-bintang{color:#f0d892;transform:rotate(72deg) scale(1.2)}
+@media (max-width:520px){.lencana{height:22px;font-size:10px;padding:0 8px 0 6px;gap:4px;inset-inline-end:8px}.lencana svg{width:12px;height:12px}.kartu.sorot .lencana{bottom:8px}}
+.f-foto-aksi{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-width:0}
+.dlg .ket{font-size:12.500px;color:#8f4d10;min-height:0;margin-top:6px}
+.dlg .ket:empty{display:none}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
 </style>
 <script>
@@ -794,11 +815,20 @@ d.classList.add("anim");setTimeout(function(){if(!window.__amtSiap)d.classList.r
     <input id="fNama" autocomplete="off" placeholder="mis. Gramoxone 276SL">
     <label for="fMerek">Merek <small>(opsional, biasanya untuk benih)</small></label>
     <input id="fMerek" autocomplete="off" placeholder="mis. Panah Merah">
+    <label for="fSorot">Label sorotan <small>(produk berlabel tampil paling atas)</small></label>
+    <select id="fSorot">
+      <option value="">Tanpa label</option>
+      <option value="unggulan">Unggulan</option>
+      <option value="laris">Terlaris</option>
+      <option value="viral">Lagi viral</option>
+      <option value="milik">Produk kami</option>
+    </select>
     <label>Ukuran / varian <small>(kosongkan kalau tidak ada)</small></label>
     <div id="fUkuran"></div>
     <button type="button" class="ba-teks" id="tambahBaris">+ Tambah baris</button>
     <label for="fFoto">Foto produk <small>(opsional)</small></label>
-    <div class="f-foto"><img id="praFoto" alt="" hidden><input id="fFoto" type="file" accept="image/*"></div>
+    <div class="f-foto"><img id="praFoto" alt="" hidden><div class="f-foto-aksi"><input id="fFoto" type="file" accept="image/*"><button type="button" class="ba-teks bahaya" id="hapusFoto" hidden>Hapus foto</button></div></div>
+    <p class="ket" id="ketFoto"></p>
     <p class="galat" id="galatEdit" role="alert"></p>
     <div class="dlg-aksi">
       <button type="button" class="ba-teks bahaya" id="hapusProduk">Hapus produk</button>
@@ -860,6 +890,11 @@ const T = {
     bukaPeta: "Buka di Google Maps", petaJudul: "Peta lokasi toko", kaki: "Toko pertanian di Palu, Sulawesi Tengah.", waAria: "Chat WhatsApp",
     lain: "Ukuran lain",
     pasang: "تثبيت التطبيق", pasangIOS: "على iPhone: افتح الصفحة في Safari، اضغط زر المشاركة، ثم اختر «إضافة إلى الشاشة الرئيسية».",
+    pilihan: "مختارات", sorot: {"unggulan": "مميّز", "laris": "الأكثر مبيعًا", "viral": "رائج", "milik": "منتجنا"},
+    pilihan: "推荐", sorot: {"unggulan": "精选", "laris": "热销", "viral": "爆款", "milik": "自有产品"},
+    pilihan: "Highlights", sorot: {"unggulan": "Featured", "laris": "Best seller", "viral": "Trending", "milik": "Our product"},
+    pilihan: "Pilihan", sorot: {"unggulan": "Pilihan utama", "laris": "Paling laris", "viral": "Tengah viral", "milik": "Produk kami"},
+    pilihan: "Pilihan", sorot: {"unggulan": "Unggulan", "laris": "Terlaris", "viral": "Lagi viral", "milik": "Produk kami"},
     pasang: "安装应用", pasangIOS: "在 iPhone 上：用 Safari 打开，点击“分享”按钮，然后选择“添加到主屏幕”。",
     pasang: "Install app", pasangIOS: "On iPhone: open in Safari, tap the Share button, then choose “Add to Home Screen”.",
     pasang: "Pasang aplikasi", pasangIOS: "Di iPhone: buka dengan Safari, tekan butang Kongsi, kemudian pilih “Tambah ke Skrin Utama”.",
@@ -1252,6 +1287,15 @@ function hitungNaik(el, tujuan, buat){
   rafAngka = requestAnimationFrame(langkah);
 }
 
+/* ---------- Label sorotan (p[7]): unggulan | laris | viral | milik ---------- */
+const IKON_SOROT = {
+  unggulan: '<path d="m12 3 2.700 5.600 6.100.800-4.500 4.300 1.100 6.100L12 16.900 6.600 19.800l1.100-6.100L3.200 9.400l6.100-.800L12 3Z" fill="currentColor" stroke="none"/>',
+  laris: '<path d="M12 3c.500 3.500 4.500 5 4.500 9.500a4.500 4.500 0 0 1-9 0c0-1.800.800-3 1.800-4 .200 1.500 1 2.300 1.700 2.500C10.500 8.500 10.500 5.500 12 3Z" fill="currentColor" stroke="none"/>',
+  viral: '<path d="M4 16l5-5 3.500 3.500L20 7m0 0h-5m5 0v5"/>',
+  milik: '<path d="M12 3 5 6v5.500c0 4.200 2.900 7.700 7 9 4.100-1.300 7-4.800 7-9V6l-7-3Z"/><path d="m9 12 2.200 2.200L15.200 10"/>'
+};
+const lencana = p => p[7] && IKON_SOROT[p[7]] ? `<span class="lencana s-${p[7]}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IKON_SOROT[p[7]]}</svg>${esc(T[bahasa].sorot[p[7]])}</span>` : "";
+
 /* ---------- State ---------- */
 const $ = id => document.getElementById(id);
 const grid = $("grid"), elKat = $("kategori"), elCari = $("cari");
@@ -1272,15 +1316,17 @@ function cairkan(beku){
 try { daftar = cairkan(JSON.parse(localStorage.getItem("amt-daftar-3") || "[]")); } catch (e) { daftar = []; }
 const simpan = () => { try { localStorage.setItem("amt-daftar-3", JSON.stringify(bekukan())); } catch (e) {} };
 
-let jumlahPerKat, INDEKS_ID, indeksCari;
+let jumlahPerKat, jumlahSorot, INDEKS_ID, indeksCari;
 function hitungData(){
   jumlahPerKat = T.id.kat.map((_, i) => PRODUK.filter(p => p[0] === i).length);
-  INDEKS_ID = PRODUK.map(p => (p[1] + " " + p[2] + " " + T.id.kat[p[0]] + " " + p[3].map(v => v[0]).join(" ")).toLowerCase());
+  jumlahSorot = PRODUK.filter(p => p[7] && IKON_SOROT[p[7]]).length;
+  if (!jumlahSorot && kategoriAktif === -2) kategoriAktif = -1;
+  INDEKS_ID = PRODUK.map(p => (p[1] + " " + p[2] + " " + T.id.kat[p[0]] + " " + p[3].map(v => v[0]).join(" ") + (p[7] && T.id.sorot[p[7]] ? " " + T.id.sorot[p[7]] : "")).toLowerCase());
   indeksCari = INDEKS_ID;
 }
 function bangunIndeks(){
   indeksCari = bahasa === "id" ? INDEKS_ID : PRODUK.map((p, i) =>
-    (INDEKS_ID[i] + " " + namaProduk(p) + " " + T[bahasa].kat[p[0]] + " " + p[3].map(v => labelUkuran(v[0], p[5])).join(" ")).toLowerCase());
+    (INDEKS_ID[i] + " " + namaProduk(p) + " " + T[bahasa].kat[p[0]] + " " + p[3].map(v => labelUkuran(v[0], p[5])).join(" ") + (p[7] && T[bahasa].sorot[p[7]] ? " " + T[bahasa].sorot[p[7]] : "")).toLowerCase());
 }
 /* ganti seluruh data produk (dari produk.json atau dari editan admin) */
 function gantiData(baru){
@@ -1293,8 +1339,9 @@ hitungData();
 
 /* ---------- Kategori ---------- */
 function gambarKategori(){
-  const tombol = (i, nama, n) => `<button class="kat" data-k="${i}" aria-pressed="${i === kategoriAktif}" ${i >= 0 ? `style="--c1:${WARNA[i][0]}"` : ""}>${i >= 0 ? "<i></i>" : ""}${esc(nama)}<small>${angka(n)}</small></button>`;
-  elKat.innerHTML = '<span class="penanda" aria-hidden="true"></span>' + tombol(-1, t("semua"), PRODUK.length) + T[bahasa].kat.map((k, i) => tombol(i, k, jumlahPerKat[i])).join("");
+  const bintang = '<svg class="kat-bintang" viewBox="0 0 24 24" aria-hidden="true">' + IKON_SOROT.unggulan + '</svg>';
+  const tombol = (i, nama, n) => `<button class="kat${i === -2 ? " kat-pilihan" : ""}" data-k="${i}" aria-pressed="${i === kategoriAktif}" ${i >= 0 ? `style="--c1:${WARNA[i][0]}"` : ""}>${i >= 0 ? "<i></i>" : i === -2 ? bintang : ""}${esc(nama)}<small>${angka(n)}</small></button>`;
+  elKat.innerHTML = '<span class="penanda" aria-hidden="true"></span>' + tombol(-1, t("semua"), PRODUK.length) + (jumlahSorot ? tombol(-2, t("pilihan"), jumlahSorot) : "") + T[bahasa].kat.map((k, i) => tombol(i, k, jumlahPerKat[i])).join("");
   posisiPenanda(false);
 }
 function posisiPenanda(halus){
@@ -1335,9 +1382,10 @@ function kartu(i){
   }
   const dus = v.length && v[s][1] ? t("dus", { n: v[s][1] }) : "";
   const sumberFoto = fotoBaru.has(p[4]) ? fotoBaru.get(p[4]).url : `foto/${p[4]}.jpg${p[6] ? "?v=" + p[6] : ""}`;
-  const foto = PAKAI_FOTO ? `<img class="foto-asli" src="${sumberFoto}" alt="${esc(nama)}" loading="lazy" onload="this.classList.add('ada')" onerror="this.remove()">` : "";
-  return `<article class="kartu kilau" data-muncul data-i="${i}" style="--c1:${c1};--c2:${c2}">
-    <div class="gbr">${gambar(p, p[5] ? "" : uk)}${foto}<span class="tanda">${esc(T[bahasa].kat[p[0]])}</span>${admin.aktif ? `<button class="edit-kartu" data-edit aria-label="Edit ${esc(p[1])}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4ZM13.500 6.500l4 4"/></svg>Edit</button>` : ""}</div>
+  const adaFoto = fotoBaru.has(p[4]) || (PAKAI_FOTO && p[6] !== -1);
+  const foto = adaFoto ? `<img class="foto-asli" src="${sumberFoto}" alt="${esc(nama)}" loading="lazy" onload="this.classList.add('ada')" onerror="this.remove()">` : "";
+  return `<article class="kartu kilau${lencana(p) ? " sorot" : ""}" data-muncul data-i="${i}" style="--c1:${c1};--c2:${c2}">
+    <div class="gbr">${gambar(p, p[5] ? "" : uk)}${foto}<span class="tanda">${esc(T[bahasa].kat[p[0]])}</span>${lencana(p)}${admin.aktif ? `<button class="edit-kartu" data-edit aria-label="Edit ${esc(p[1])}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4ZM13.500 6.500l4 4"/></svg>Edit</button>` : ""}</div>
     <div class="isi">
       <h3 dir="auto">${esc(nama)}</h3>
       ${nama !== p[1] ? `<p class="asli" dir="ltr" lang="id">${esc(p[1])}</p>` : ""}
@@ -1355,9 +1403,13 @@ function saring(halus){
   hasil = [];
   for (let i = 0; i < PRODUK.length; i++){
     if (kategoriAktif >= 0 && PRODUK[i][0] !== kategoriAktif) continue;
+    if (kategoriAktif === -2 && !(PRODUK[i][7] && IKON_SOROT[PRODUK[i][7]])) continue;
     if (q.length && !q.every(w => indeksCari[i].includes(w))) continue;
     hasil.push(i);
   }
+  /* produk berlabel selalu naik ke urutan paling atas */
+  const diSorot = i => !!(PRODUK[i][7] && IKON_SOROT[PRODUK[i][7]]);
+  hasil = hasil.filter(diSorot).concat(hasil.filter(i => !diSorot(i)));
   const isi = () => {
     grid.innerHTML = hasil.slice(0, tampil).map(kartu).join("");
     amati(grid.children);
@@ -1366,7 +1418,7 @@ function saring(halus){
     grid.classList.remove("keluar");
   };
   if (halus && ANIM) { grid.classList.add("keluar"); setTimeout(isi, 170); } else isi();
-  const disaring = q.length || kategoriAktif >= 0;
+  const disaring = q.length || kategoriAktif !== -1;
   hitungNaik($("ringkas"), disaring ? hasil.length : PRODUK.length, n => disaring
     ? t("ketemu", { n: angka(n) })
     : t("ringkas", { n: angka(n), k: T.id.kat.length }));
@@ -1521,6 +1573,7 @@ const GH = (() => {
 })();
 const admin = { aktif: false, token: "", cabang: "main", kotor: 0, edit: -1, fotoDipilih: null };
 const fotoBaru = new Map();          // slug -> { url (data:), b64, terkirim }
+const fotoHapus = new Set();         // slug yang file fotonya harus dihapus dari repo saat disimpan
 const dlgMasuk = $("dlgMasuk"), dlgEdit = $("dlgEdit");
 const bisaDialog = !!(dlgMasuk && dlgMasuk.showModal);
 
@@ -1536,6 +1589,15 @@ async function ghSimpanFile(jalur, b64, pesan, ulang){
   const r = await ghApi(`/contents/${p}`, { method: "PUT", body: JSON.stringify({ message: pesan, content: b64, sha, branch: admin.cabang }) });
   if (r.status === 409 && !ulang) return ghSimpanFile(jalur, b64, pesan, true);
   if (!r.ok) throw new Error("Gagal menyimpan " + jalur + " (" + r.status + ")");
+}
+async function ghHapusFile(jalur, pesan){
+  const p = GH.folder + jalur;
+  const ada = await ghApi(`/contents/${p}?ref=${encodeURIComponent(admin.cabang)}`, { cache: "no-store" });
+  if (ada.status === 404) return;                      // memang sudah tidak ada
+  if (!ada.ok) throw new Error("Gagal membaca " + jalur + " (" + ada.status + ")");
+  const sha = (await ada.json()).sha;
+  const r = await ghApi(`/contents/${p}`, { method: "DELETE", body: JSON.stringify({ message: pesan, sha, branch: admin.cabang }) });
+  if (!r.ok && r.status !== 404) throw new Error("Gagal menghapus " + jalur + " (" + r.status + ")");
 }
 
 function statusAdmin(teks, jenis){
@@ -1604,17 +1666,21 @@ window.addEventListener("beforeunload", e => { if (admin.aktif && admin.kotor) {
 /* ---------- Form edit ---------- */
 const barisUkuran = (label, isi) => `<div class="f-baris"><input class="f-label" placeholder="mis. 500 ml" value="${esc(label || "")}" aria-label="Ukuran atau varian"><input class="f-isi" inputmode="numeric" placeholder="isi/dus" value="${esc(isi || "")}" aria-label="Isi per dus"><button type="button" class="f-hapus" aria-label="Hapus baris">&times;</button></div>`;
 function bukaEdit(i){
-  admin.edit = i; admin.fotoDipilih = null;
+  admin.edit = i; admin.fotoDipilih = null; admin.hapusFoto = false;
   const p = i >= 0 ? PRODUK[i] : [kategoriAktif >= 0 ? kategoriAktif : 0, "", "", [], "", 0];
   $("judulEdit").textContent = i >= 0 ? "Edit produk" : "Tambah produk";
   $("fKategori").innerHTML = T.id.kat.map((k, n) => `<option value="${n}" ${n === p[0] ? "selected" : ""}>${k}</option>`).join("");
   $("fNama").value = p[1]; $("fMerek").value = p[2];
   $("fJenis").value = p[5] ? "1" : "0";
+  $("fSorot").value = IKON_SOROT[p[7]] ? p[7] : "";
   $("fUkuran").innerHTML = (p[3].length ? p[3] : [["", ""]]).map(v => barisUkuran(v[0], v[1])).join("");
   $("fFoto").value = "";
   const pra = $("praFoto"), baru = fotoBaru.get(p[4]);
-  pra.hidden = true; pra.onload = () => { pra.hidden = false; }; pra.onerror = () => { pra.hidden = true; };
-  if (baru) pra.src = baru.url; else if (p[4]) pra.src = `foto/${p[4]}.jpg${p[6] ? "?v=" + p[6] : ""}`; else pra.removeAttribute("src");
+  const tbHapusFoto = $("hapusFoto");
+  pra.hidden = true; tbHapusFoto.hidden = true;
+  pra.onload = () => { pra.hidden = false; tbHapusFoto.hidden = false; }; pra.onerror = () => { pra.hidden = true; tbHapusFoto.hidden = true; };
+  if (baru) pra.src = baru.url; else if (p[4] && p[6] !== -1) pra.src = `foto/${p[4]}.jpg${p[6] ? "?v=" + p[6] : ""}`; else pra.removeAttribute("src");
+  $("ketFoto").textContent = "";
   $("hapusProduk").hidden = i < 0; $("galatEdit").textContent = "";
   dlgEdit.showModal();
 }
@@ -1634,8 +1700,8 @@ $("fFoto").addEventListener("change", e => {
       const c = document.createElement("canvas"); c.width = Math.round(img.width * s); c.height = Math.round(img.height * s);
       const x = c.getContext("2d"); x.fillStyle = "#fff"; x.fillRect(0, 0, c.width, c.height); x.drawImage(img, 0, 0, c.width, c.height);
       const url = c.toDataURL("image/jpeg", 0.82);
-      admin.fotoDipilih = { url, b64: url.split(",")[1], terkirim: false };
-      const pra = $("praFoto"); pra.src = url; pra.hidden = false;
+      admin.fotoDipilih = { url, b64: url.split(",")[1], terkirim: false }; admin.hapusFoto = false;
+      const pra = $("praFoto"); pra.src = url; pra.hidden = false; $("hapusFoto").hidden = false; $("ketFoto").textContent = "";
     };
     img.onerror = () => { $("galatEdit").textContent = "File itu bukan gambar yang bisa dibaca."; };
     img.src = baca.result;
@@ -1643,6 +1709,12 @@ $("fFoto").addEventListener("change", e => {
   baca.readAsDataURL(f);
 });
 
+$("hapusFoto").addEventListener("click", () => {
+  admin.hapusFoto = true; admin.fotoDipilih = null; $("fFoto").value = "";
+  const pra = $("praFoto"); pra.onload = pra.onerror = null; pra.removeAttribute("src"); pra.hidden = true;
+  $("hapusFoto").hidden = true;
+  $("ketFoto").textContent = "Foto akan dihapus setelah Terapkan, lalu Simpan ke website. Produk kembali pakai ilustrasi.";
+});
 const buatSlug = (nama, kecuali) => {
   const dasar = nama.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "produk";
   const dipakai = new Set(PRODUK.filter((_, n) => n !== kecuali).map(p => p[4]));
@@ -1653,7 +1725,7 @@ $("formEdit").addEventListener("submit", e => {
   e.preventDefault();
   const nama = $("fNama").value.trim().replace(/\s+/g, " ");
   if (!nama) { $("galatEdit").textContent = "Nama produk wajib diisi."; $("fNama").focus(); return; }
-  const kat = +$("fKategori").value, merek = $("fMerek").value.trim(), jenis = +$("fJenis").value;
+  const kat = +$("fKategori").value, merek = $("fMerek").value.trim(), jenis = +$("fJenis").value, sorot = $("fSorot").value;
   const terlihat = new Set(), ukuran = [];
   $("fUkuran").querySelectorAll(".f-baris").forEach(b => {
     const label = b.querySelector(".f-label").value.trim().replace(/\s+/g, " "), isi = b.querySelector(".f-isi").value.replace(/\D/g, "");
@@ -1662,20 +1734,22 @@ $("formEdit").addEventListener("submit", e => {
   const data = PRODUK.slice(), i = admin.edit;
   let p;
   if (i >= 0) {
-    p = data[i].slice(); p[1] = nama; p[2] = merek; p[3] = ukuran; p[5] = jenis;
+    p = data[i].slice(); p[1] = nama; p[2] = merek; p[3] = ukuran; p[5] = jenis; p[6] = p[6] || 0; p[7] = sorot;
     if (p[0] !== kat) { p[0] = kat; data.splice(i, 1); const di = data.findIndex(x => x[0] === kat); data.splice(di < 0 ? data.length : di, 0, p); }
     else data[i] = p;
   } else {
-    p = [kat, nama, merek, ukuran, buatSlug(nama, -1), jenis];
+    p = [kat, nama, merek, ukuran, buatSlug(nama, -1), jenis, 0, sorot];
     const di = data.findIndex(x => x[0] === kat); data.splice(di < 0 ? data.length : di, 0, p);
   }
-  if (admin.fotoDipilih) { fotoBaru.set(p[4], admin.fotoDipilih); p[6] = Date.now(); }
+  if (admin.fotoDipilih) { fotoBaru.set(p[4], admin.fotoDipilih); fotoHapus.delete(p[4]); p[6] = Date.now(); }
+  else if (admin.hapusFoto) { fotoBaru.delete(p[4]); fotoHapus.add(p[4]); p[6] = -1; }
   admin.kotor++; dlgEdit.close(); gantiData(data); statusAdmin();
 });
 $("hapusProduk").addEventListener("click", () => {
   const i = admin.edit; if (i < 0) return;
   if (!confirm(`Hapus "${PRODUK[i][1]}" dari katalog?`)) return;
-  const data = PRODUK.slice(); data.splice(i, 1);
+  const data = PRODUK.slice(), buang = data.splice(i, 1)[0];
+  fotoBaru.delete(buang[4]); fotoHapus.add(buang[4]);       // fotonya ikut dibuang dari repo
   admin.kotor++; dlgEdit.close(); gantiData(data); statusAdmin();
 });
 grid.addEventListener("click", e => {
@@ -1688,6 +1762,12 @@ $("simpanAdmin").addEventListener("click", async () => {
   if (!admin.kotor) return;
   const tb = $("simpanAdmin"); tb.disabled = true;
   try {
+    let h = 0; const jmlHapus = fotoHapus.size;
+    for (const slug of Array.from(fotoHapus)) {
+      statusAdmin(`Menghapus foto ${++h}/${jmlHapus}…`, "proses");
+      if (!fotoBaru.has(slug)) await ghHapusFile(`foto/${slug}.jpg`, "Hapus foto produk: " + slug);
+      fotoHapus.delete(slug);
+    }
     const antre = Array.from(fotoBaru).filter(([s, f]) => !f.terkirim && PRODUK.some(p => p[4] === s));
     let n = 0;
     for (const [slug, f] of antre) {
