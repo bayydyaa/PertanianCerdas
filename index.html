@@ -1318,6 +1318,7 @@ const pengamat = ANIM ? new IntersectionObserver(entri => {
   });
 }, { rootMargin: "0px 0px -6% 0px", threshold: 0.05 }) : null;
 const amati = daftarEl => { if (pengamat) Array.prototype.forEach.call(daftarEl, el => pengamat.observe(el)); };
+const lepas = daftarEl => { if (pengamat) Array.prototype.forEach.call(daftarEl, el => pengamat.unobserve(el)); };
 const ulangAnimasi = (el, kelas) => { if (!el) return; el.classList.remove(kelas); void el.offsetWidth; el.classList.add(kelas); };
 let angkaSekarang = null, rafAngka;
 function hitungNaik(el, tujuan, buat){
@@ -1342,6 +1343,11 @@ const IKON_SOROT = {
   milik: '<path d="M12 3 5 6v5.500c0 4.200 2.900 7.700 7 9 4.100-1.300 7-4.800 7-9V6l-7-3Z"/><path d="m9 12 2.200 2.200L15.200 10"/>'
 };
 const lencana = p => p[7] && IKON_SOROT[p[7]] ? `<span class="lencana s-${p[7]}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IKON_SOROT[p[7]]}</svg>${esc(T[bahasa].sorot[p[7]])}</span>` : "";
+
+/* foto yang ternyata tidak ada dicatat, supaya tidak diminta ulang tiap kali kartu digambar lagi
+   (hemat kuota pengunjung). Catatan ini hilang saat halaman dimuat ulang. */
+const fotoKosong = new Set();
+window.fotoGagal = img => { if (img.dataset.f) fotoKosong.add(img.dataset.f); img.remove(); };
 
 /* ---------- State ---------- */
 const $ = id => document.getElementById(id);
@@ -1432,6 +1438,8 @@ function gambarSorotan(){
       <div class="rel-jalur" role="region" aria-label="${esc(nama)}" tabindex="0">${isi.map(i => kartu(i, true)).join("")}</div>
     </div>`;
   });
+  lepas(elSorotan.querySelectorAll("[data-muncul]"));
+  if (pengamatRel) elSorotan.querySelectorAll(".rel-jalur").forEach(j => pengamatRel.unobserve(j));
   elSorotan.innerHTML = html; elSorotan.hidden = !html;
   amati(elSorotan.querySelectorAll("[data-muncul]"));
   elSorotan.querySelectorAll(".rel-jalur").forEach((j, n) => {
@@ -1442,6 +1450,7 @@ function gambarSorotan(){
   });
 }
 const RTL = () => document.documentElement.dir === "rtl";
+const BISA_HOVER = !!(window.matchMedia && matchMedia("(hover:hover) and (pointer:fine)").matches);   // di HP, :hover "nempel" setelah disentuh
 const lebarLangkah = j => { const k = j.querySelector(".kartu"); return k ? k.offsetWidth + parseFloat(getComputedStyle(j).columnGap || 14) : 200; };
 function perbaruiNav(j){
   const maks = j.scrollWidth - j.clientWidth, pos = Math.abs(j.scrollLeft), nav = j.parentNode.querySelector(".rel-nav");
@@ -1472,6 +1481,8 @@ if (ANIM) setInterval(() => {
   const kini = Date.now();
   elSorotan.querySelectorAll(".rel-jalur").forEach(j => {
     if (!j._tampak || kini < (j._jedaSampai || 0)) return;
+    const kotak = j.parentNode;
+    if ((BISA_HOVER && kotak.matches(":hover")) || kotak.contains(document.activeElement)) { j._jedaSampai = kini + 1500; return; }
     j._jedaSampai = kini + 3600; geserRel(j, 1);
   });
 }, 400);
@@ -1492,8 +1503,8 @@ function kartu(i, rel){
   }
   const dus = v.length && v[s][1] ? t("dus", { n: v[s][1] }) : "";
   const sumberFoto = fotoBaru.has(p[4]) ? fotoBaru.get(p[4]).url : `foto/${p[4]}.jpg${p[6] ? "?v=" + p[6] : ""}`;
-  const adaFoto = fotoBaru.has(p[4]) || (PAKAI_FOTO && p[6] !== -1);
-  const foto = adaFoto ? `<img class="foto-asli" src="${sumberFoto}" alt="${esc(nama)}" loading="lazy" onload="this.classList.add('ada')" onerror="this.remove()">` : "";
+  const adaFoto = fotoBaru.has(p[4]) || (PAKAI_FOTO && p[6] !== -1 && !fotoKosong.has(p[4] + "|" + (p[6] || 0)));
+  const foto = adaFoto ? `<img class="foto-asli" src="${sumberFoto}" alt="${esc(nama)}" loading="lazy" data-f="${p[4]}|${p[6] || 0}" onload="this.classList.add('ada')" onerror="fotoGagal(this)">` : "";
   return `<article class="kartu kilau${lencana(p) ? " sorot" : ""}"${rel ? "" : " data-muncul"} data-i="${i}" style="--c1:${c1};--c2:${c2}">
     <div class="gbr">${gambar(p, p[5] ? "" : uk)}${foto}<span class="tanda">${esc(T[bahasa].kat[p[0]])}</span>${lencana(p)}${admin.aktif ? `<button class="edit-kartu" data-edit aria-label="Edit ${esc(p[1])}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4ZM13.500 6.500l4 4"/></svg>Edit</button>` : ""}</div>
     <div class="isi">
@@ -1518,6 +1529,7 @@ function saring(halus){
     hasil.push(i);
   }
   const isi = () => {
+    lepas(grid.children);
     grid.innerHTML = hasil.slice(0, tampil).map(kartu).join("");
     amati(grid.children);
     $("kosong").hidden = hasil.length > 0;
@@ -1554,10 +1566,12 @@ areaKartu.addEventListener("click", e => {
   const u = e.target.closest("[data-u]");
   if (u){                                   // ganti ukuran / varian
     const n = +u.dataset.u; pilihan.set(i, n);
-    el.querySelectorAll("[data-u]").forEach(b => b.setAttribute("aria-checked", b === u));
-    const dus = el.querySelector(".dus"), teksDus = p[3][n][1] ? t("dus", { n: p[3][n][1] }) : "";
-    if (dus.textContent !== teksDus) { dus.textContent = teksDus; ulangAnimasi(dus, "ganti"); }
-    if (!p[5]) { el.querySelector(".kemas").outerHTML = gambar(p, p[3][n][0]); el.querySelector(".kemas").classList.add("ganti"); }
+    areaKartu.querySelectorAll(`.kartu[data-i="${i}"]`).forEach(k => {
+      k.querySelectorAll("[data-u]").forEach(b => b.setAttribute("aria-checked", +b.dataset.u === n));
+      const dus = k.querySelector(".dus"), teksDus = p[3][n][1] ? t("dus", { n: p[3][n][1] }) : "";
+      if (dus.textContent !== teksDus) { dus.textContent = teksDus; if (k === el) ulangAnimasi(dus, "ganti"); }
+      if (!p[5]) { k.querySelector(".kemas").outerHTML = gambar(p, p[3][n][0]); if (k === el) k.querySelector(".kemas").classList.add("ganti"); }
+    });
     return;
   }
   const tb = e.target.closest(".tambah");
@@ -1570,8 +1584,9 @@ areaKartu.addEventListener("click", e => {
     tb.classList.add("ok"); label.textContent = t("masuk");
     clearTimeout(tb._jeda);
     tb._jeda = setTimeout(() => { tb.classList.remove("ok"); label.textContent = t("tambah"); }, 1300);
+    gambarDaftar();                           // isi daftar langsung benar, tidak menunggu animasi
     terbangKeDaftar(tb, () => {
-      gambarDaftar(); ulangAnimasi($("hitung"), "ganti");
+      ulangAnimasi($("hitung"), "ganti");
       const b = $("bukaDaftar"); b.classList.add("denyut"); setTimeout(() => b.classList.remove("denyut"), 520);
     });
   }
@@ -1688,15 +1703,46 @@ const ghApi = (jalur, opsi = {}) => fetch(`https://api.github.com/repos/${GH.pem
   headers: Object.assign({ "Authorization": "Bearer " + admin.token, "Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28" }, opsi.headers || {})
 }));
 const keB64 = teks => { const b = new TextEncoder().encode(teks); let s = ""; for (let i = 0; i < b.length; i += 8192) s += String.fromCharCode.apply(null, b.subarray(i, i + 8192)); return btoa(s); };
-async function ghSimpanFile(jalur, b64, pesan, ulang){
+/* harapan = sha file saat terakhir kita baca (null = belum ada). Kalau di repo sudah beda,
+   berarti ada yang mengubahnya dari tempat lain: tanya dulu sebelum menimpa. */
+async function ghSimpanFile(jalur, b64, pesan, harapan, ulang){
   const p = GH.folder + jalur;
   let sha;
   const ada = await ghApi(`/contents/${p}?ref=${encodeURIComponent(admin.cabang)}`, { cache: "no-store" });
-  if (ada.ok) sha = (await ada.json()).sha; else if (ada.status !== 404) throw new Error("Gagal membaca " + jalur + " (" + ada.status + ")");
+  if (ada.ok) sha = (await ada.json()).sha; else if (ada.status !== 404) throw new Error("Gagal membaca " + jalur + " (" + ada.status + ").");
+  if (harapan !== undefined && !ulang && (sha || null) !== harapan &&
+      !confirm("Data produk di website sudah berubah sejak Anda masuk admin (mungkin diedit dari perangkat lain).\n\nOK = timpa dengan versi di layar ini.\nBatal = jangan simpan dulu."))
+    throw new Error("Simpan dibatalkan.");
   const r = await ghApi(`/contents/${p}`, { method: "PUT", body: JSON.stringify({ message: pesan, content: b64, sha, branch: admin.cabang }) });
-  if (r.status === 409 && !ulang) return ghSimpanFile(jalur, b64, pesan, true);
-  if (!r.ok) throw new Error("Gagal menyimpan " + jalur + " (" + r.status + ")");
+  if (r.status === 409 && !ulang) return ghSimpanFile(jalur, b64, pesan, harapan, true);
+  if (!r.ok) throw new Error("Gagal menyimpan " + jalur + " (" + r.status + ").");
+  const hasil = await r.json().catch(() => ({}));
+  return hasil && hasil.content ? hasil.content.sha : undefined;
 }
+const dataSah = d => Array.isArray(d) && d.length > 0 &&
+  d.every(p => Array.isArray(p) && T.id.kat[p[0]] && typeof p[1] === "string" && typeof p[2] === "string" && Array.isArray(p[3]) && typeof p[4] === "string");
+/* Saat masuk admin, data diambil langsung dari repo (bukan dari halaman), supaya editan
+   tidak pernah dibuat di atas data lama — misalnya saat website belum selesai memperbarui diri. */
+async function ghMuatData(){
+  const r = await ghApi(`/contents/${GH.folder}produk.json?ref=${encodeURIComponent(admin.cabang)}`, { cache: "no-store" });
+  if (r.status === 404) { admin.shaData = null; return; }             // belum pernah disimpan: pakai data bawaan
+  if (!r.ok) throw new Error("Gagal memuat data produk dari GitHub (" + r.status + ").");
+  const d = await r.json();
+  let teks;
+  if (d.content) teks = new TextDecoder().decode(Uint8Array.from(atob(d.content.replace(/\s/g, "")), c => c.charCodeAt(0)));
+  else {
+    const mentah = await ghApi(`/contents/${GH.folder}produk.json?ref=${encodeURIComponent(admin.cabang)}`, { cache: "no-store", headers: { "Accept": "application/vnd.github.raw+json" } });
+    if (!mentah.ok) throw new Error("Gagal memuat data produk dari GitHub (" + mentah.status + ").");
+    teks = await mentah.text();
+  }
+  let data;
+  try { data = JSON.parse(teks); } catch (e) { data = null; }
+  if (!dataSah(data)) throw new Error("Isi produk.json di repo tidak bisa dibaca. Jangan simpan apa pun dulu, kabari pembuat web.");
+  admin.shaData = d.sha;
+  if (JSON.stringify(data) !== JSON.stringify(PRODUK)) gantiData(data);
+}
+const galatJaringan = e => e instanceof TypeError;
+const pesanGalat = e => galatJaringan(e) ? "Tidak bisa menghubungi GitHub. Cek internet, lalu coba lagi." : e.message;
 async function ghHapusFile(jalur, pesan){
   const p = GH.folder + jalur;
   const ada = await ghApi(`/contents/${p}?ref=${encodeURIComponent(admin.cabang)}`, { cache: "no-store" });
@@ -1727,11 +1773,12 @@ function keluarAdmin(){
 async function cekToken(token){
   admin.token = token;
   const r = await ghApi("", { cache: "no-store" });
-  if (r.status === 401) throw new Error("Token salah atau sudah kedaluwarsa.");
-  if (r.status === 404) throw new Error("Token ini tidak punya akses ke repo " + GH.pemilik + "/" + GH.repo + ".");
+  const tolak = pesan => Object.assign(new Error(pesan), { tokenBuruk: true });
+  if (r.status === 401) throw tolak("Token salah atau sudah kedaluwarsa.");
+  if (r.status === 404) throw tolak("Token ini tidak punya akses ke repo " + GH.pemilik + "/" + GH.repo + ".");
   if (!r.ok) throw new Error("GitHub menolak (" + r.status + "). Coba lagi sebentar.");
   const d = await r.json();
-  if (!d.permissions || !d.permissions.push) throw new Error("Token belum diberi izin menulis (Contents: Read and write).");
+  if (!d.permissions || !d.permissions.push) throw tolak("Token belum diberi izin menulis (Contents: Read and write).");
   admin.cabang = d.default_branch || "main";
 }
 $("bukaAdmin").addEventListener("click", async () => {
@@ -1740,8 +1787,14 @@ $("bukaAdmin").addEventListener("click", async () => {
   let simpanan = "";
   try { simpanan = localStorage.getItem("amt-token") || ""; } catch (e) {}
   if (simpanan) {
-    try { await cekToken(simpanan); masukAdmin(); return; }
-    catch (e) { try { localStorage.removeItem("amt-token"); } catch (x) {} $("galatMasuk").textContent = e.message; }
+    const tb = $("bukaAdmin"); tb.disabled = true;
+    try { await cekToken(simpanan); await ghMuatData(); tb.disabled = false; masukAdmin(); return; }
+    catch (e) {
+      tb.disabled = false; admin.token = "";
+      /* token dibuang hanya kalau GitHub memang menolaknya, bukan karena internet putus */
+      if (e.tokenBuruk) { try { localStorage.removeItem("amt-token"); } catch (x) {} }
+      $("galatMasuk").textContent = pesanGalat(e);
+    }
   } else $("galatMasuk").textContent = "";
   $("repoAdmin").textContent = GH.pemilik + "/" + GH.repo;
   dlgMasuk.showModal();
@@ -1752,12 +1805,12 @@ $("formMasuk").addEventListener("submit", async e => {
   if (!token) return;
   tb.disabled = true; tb.textContent = "Memeriksa…"; $("galatMasuk").textContent = "";
   try {
-    await cekToken(token);
+    await cekToken(token); await ghMuatData();
     if ($("ingatToken").checked) { try { localStorage.setItem("amt-token", token); } catch (x) {} }
     $("tokenAdmin").value = ""; dlgMasuk.close(); masukAdmin();
   } catch (err) {
     admin.token = "";
-    $("galatMasuk").textContent = err.message === "Failed to fetch" ? "Tidak bisa menghubungi GitHub. Cek internet." : err.message;
+    $("galatMasuk").textContent = pesanGalat(err);
   }
   tb.disabled = false; tb.textContent = "Masuk";
 });
@@ -1883,11 +1936,12 @@ $("simpanAdmin").addEventListener("click", async () => {
       f.terkirim = true;
     }
     statusAdmin("Menyimpan data produk…", "proses");
-    await ghSimpanFile("produk.json", keB64(JSON.stringify(PRODUK)), `Update katalog (${admin.kotor} perubahan)`);
+    const shaBaru = await ghSimpanFile("produk.json", keB64(JSON.stringify(PRODUK)), `Update katalog (${admin.kotor} perubahan)`, admin.shaData);
+    if (shaBaru) admin.shaData = shaBaru; else delete admin.shaData;
     admin.kotor = 0;
     statusAdmin("Tersimpan. Website ikut berubah dalam 1–2 menit.", "sukses");
   } catch (err) {
-    statusAdmin(err.message === "Failed to fetch" ? "Gagal: tidak bisa menghubungi GitHub. Cek internet, lalu simpan lagi." : err.message + " Perubahan masih ada, coba simpan lagi.", "galat");
+    statusAdmin(pesanGalat(err) + " Perubahan masih ada di layar ini.", "galat");
     tb.disabled = false;
   }
 });
@@ -1979,8 +2033,7 @@ if (location.protocol.indexOf("http") === 0) {
   fetch("produk.json", { cache: "no-cache" })
     .then(r => r.ok ? r.json() : null)
     .then(d => {
-      if (admin.kotor || !Array.isArray(d) || !d.length) return;
-      if (!d.every(p => Array.isArray(p) && typeof p[1] === "string" && Array.isArray(p[3]) && typeof p[4] === "string" && T.id.kat[p[0]])) return;
+      if (admin.aktif || admin.kotor || !dataSah(d)) return;
       if (JSON.stringify(d) !== JSON.stringify(PRODUK)) gantiData(d);
     }).catch(() => {});
 }
