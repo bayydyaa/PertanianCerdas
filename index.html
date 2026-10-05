@@ -1293,7 +1293,7 @@ function jenisKemasan(p, ukuran){
   if (/\d\s?(wp|wg|sp|gr|ds)\b/i.test(p[1])) return "saset";
   return kat === 6 ? "karung" : "botol";
 }
-const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+const esc = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
 
 /* Label di kemasan sengaja tetap nama asli, sama seperti kemasan aslinya. */
 function gambar(p, ukuran){
@@ -1342,7 +1342,31 @@ const IKON_SOROT = {
   viral: '<path d="M4 16l5-5 3.500 3.500L20 7m0 0h-5m5 0v5"/>',
   milik: '<path d="M12 3 5 6v5.500c0 4.200 2.900 7.700 7 9 4.100-1.300 7-4.800 7-9V6l-7-3Z"/><path d="m9 12 2.200 2.200L15.200 10"/>'
 };
-const lencana = p => p[7] && IKON_SOROT[p[7]] ? `<span class="lencana s-${p[7]}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IKON_SOROT[p[7]]}</svg>${esc(T[bahasa].sorot[p[7]])}</span>` : "";
+const labelSah = k => typeof k === "string" && Object.prototype.hasOwnProperty.call(IKON_SOROT, k);
+/* Semua data produk (bawaan, produk.json, hasil form admin) dirapikan dulu ke bentuk yang pasti:
+   kategori = angka sah, nama-file = huruf kecil/angka/strip saja, versi foto = angka, label = daftar putih.
+   Data yang bentuknya aneh ditolak (null), jadi tidak ada teks liar yang bisa ikut tertulis ke halaman. */
+function rapikanData(d){
+  if (!Array.isArray(d) || !d.length) return null;
+  const hasil = [], dipakai = new Set();
+  for (const p of d){
+    if (!Array.isArray(p)) return null;
+    const kat = Number(p[0]);
+    if (!Number.isInteger(kat) || kat < 0 || kat >= T.id.kat.length) return null;
+    if (typeof p[1] !== "string" || !p[1].trim()) return null;
+    const slug = String(p[4] == null ? "" : p[4]).toLowerCase().replace(/[^a-z0-9-]/g, "");
+    if (!slug || dipakai.has(slug)) return null;
+    dipakai.add(slug);
+    const ukuran = (Array.isArray(p[3]) ? p[3] : [])
+      .filter(v => Array.isArray(v) && typeof v[0] === "string" && v[0].trim())
+      .map(v => [v[0], String(v[1] == null ? "" : v[1]).replace(/\D/g, "")]);
+    const foto = Number(p[6]);
+    hasil.push([kat, p[1], typeof p[2] === "string" ? p[2] : "", ukuran, slug, p[5] ? 1 : 0, Number.isFinite(foto) ? Math.trunc(foto) : 0, labelSah(p[7]) ? p[7] : ""]);
+  }
+  return hasil;
+}
+PRODUK = rapikanData(PRODUK) || PRODUK;
+const lencana = p => labelSah(p[7]) ? `<span class="lencana s-${esc(p[7])}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IKON_SOROT[p[7]]}</svg>${esc(T[bahasa].sorot[p[7]])}</span>` : "";
 
 /* foto yang ternyata tidak ada dicatat, supaya tidak diminta ulang tiap kali kartu digambar lagi
    (hemat kuota pengunjung). Catatan ini hilang saat halaman dimuat ulang. */
@@ -1372,7 +1396,7 @@ const simpan = () => { try { localStorage.setItem("amt-daftar-3", JSON.stringify
 let jumlahPerKat, jumlahSorot, INDEKS_ID, indeksCari;
 function hitungData(){
   jumlahPerKat = T.id.kat.map((_, i) => PRODUK.filter(p => p[0] === i).length);
-  jumlahSorot = PRODUK.filter(p => p[7] && IKON_SOROT[p[7]]).length;
+  jumlahSorot = PRODUK.filter(p => labelSah(p[7])).length;
   if (!jumlahSorot && kategoriAktif === -2) kategoriAktif = -1;
   INDEKS_ID = PRODUK.map(p => (p[1] + " " + p[2] + " " + T.id.kat[p[0]] + " " + p[3].map(v => v[0]).join(" ") + (p[7] && T.id.sorot[p[7]] ? " " + T.id.sorot[p[7]] : "")).toLowerCase());
   indeksCari = INDEKS_ID;
@@ -1502,9 +1526,9 @@ function kartu(i, rel){
     ukuranHTML = `<div class="ukuran"><span>${t("ukuran")}</span><b class="satu">${esc(labelUkuran(uk, p[5]))}</b></div>`;
   }
   const dus = v.length && v[s][1] ? t("dus", { n: v[s][1] }) : "";
-  const sumberFoto = fotoBaru.has(p[4]) ? fotoBaru.get(p[4]).url : `foto/${p[4]}.jpg${p[6] ? "?v=" + p[6] : ""}`;
+  const sumberFoto = fotoBaru.has(p[4]) ? fotoBaru.get(p[4]).url : `foto/${encodeURIComponent(p[4])}.jpg${Number(p[6]) > 0 ? "?v=" + Number(p[6]) : ""}`;
   const adaFoto = fotoBaru.has(p[4]) || (PAKAI_FOTO && p[6] !== -1 && !fotoKosong.has(p[4] + "|" + (p[6] || 0)));
-  const foto = adaFoto ? `<img class="foto-asli" src="${sumberFoto}" alt="${esc(nama)}" loading="lazy" data-f="${p[4]}|${p[6] || 0}" onload="this.classList.add('ada')" onerror="fotoGagal(this)">` : "";
+  const foto = adaFoto ? `<img class="foto-asli" src="${esc(sumberFoto)}" alt="${esc(nama)}" loading="lazy" data-f="${esc(p[4] + "|" + (p[6] || 0))}" onload="this.classList.add('ada')" onerror="fotoGagal(this)">` : "";
   return `<article class="kartu kilau${lencana(p) ? " sorot" : ""}"${rel ? "" : " data-muncul"} data-i="${i}" style="--c1:${c1};--c2:${c2}">
     <div class="gbr">${gambar(p, p[5] ? "" : uk)}${foto}<span class="tanda">${esc(T[bahasa].kat[p[0]])}</span>${lencana(p)}${admin.aktif ? `<button class="edit-kartu" data-edit aria-label="Edit ${esc(p[1])}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4ZM13.500 6.500l4 4"/></svg>Edit</button>` : ""}</div>
     <div class="isi">
@@ -1524,7 +1548,7 @@ function saring(halus){
   hasil = [];
   for (let i = 0; i < PRODUK.length; i++){
     if (kategoriAktif >= 0 && PRODUK[i][0] !== kategoriAktif) continue;
-    if (kategoriAktif === -2 && !(PRODUK[i][7] && IKON_SOROT[PRODUK[i][7]])) continue;
+    if (kategoriAktif === -2 && !labelSah(PRODUK[i][7])) continue;
     if (q.length && !q.every(w => indeksCari[i].includes(w))) continue;
     hasil.push(i);
   }
@@ -1719,8 +1743,6 @@ async function ghSimpanFile(jalur, b64, pesan, harapan, ulang){
   const hasil = await r.json().catch(() => ({}));
   return hasil && hasil.content ? hasil.content.sha : undefined;
 }
-const dataSah = d => Array.isArray(d) && d.length > 0 &&
-  d.every(p => Array.isArray(p) && T.id.kat[p[0]] && typeof p[1] === "string" && typeof p[2] === "string" && Array.isArray(p[3]) && typeof p[4] === "string");
 /* Saat masuk admin, data diambil langsung dari repo (bukan dari halaman), supaya editan
    tidak pernah dibuat di atas data lama — misalnya saat website belum selesai memperbarui diri. */
 async function ghMuatData(){
@@ -1736,8 +1758,8 @@ async function ghMuatData(){
     teks = await mentah.text();
   }
   let data;
-  try { data = JSON.parse(teks); } catch (e) { data = null; }
-  if (!dataSah(data)) throw new Error("Isi produk.json di repo tidak bisa dibaca. Jangan simpan apa pun dulu, kabari pembuat web.");
+  try { data = rapikanData(JSON.parse(teks)); } catch (e) { data = null; }
+  if (!data) throw new Error("Isi produk.json di repo tidak bisa dibaca. Jangan simpan apa pun dulu, kabari pembuat web.");
   admin.shaData = d.sha;
   if (JSON.stringify(data) !== JSON.stringify(PRODUK)) gantiData(data);
 }
@@ -1832,14 +1854,14 @@ function bukaEdit(i){
   $("fKategori").innerHTML = T.id.kat.map((k, n) => `<option value="${n}" ${n === p[0] ? "selected" : ""}>${k}</option>`).join("");
   $("fNama").value = p[1]; $("fMerek").value = p[2];
   $("fJenis").value = p[5] ? "1" : "0";
-  $("fSorot").value = IKON_SOROT[p[7]] ? p[7] : "";
+  $("fSorot").value = labelSah(p[7]) ? p[7] : "";
   $("fUkuran").innerHTML = (p[3].length ? p[3] : [["", ""]]).map(v => barisUkuran(v[0], v[1])).join("");
   $("fFoto").value = "";
   const pra = $("praFoto"), baru = fotoBaru.get(p[4]);
   const tbHapusFoto = $("hapusFoto");
   pra.hidden = true; tbHapusFoto.hidden = true;
   pra.onload = () => { pra.hidden = false; tbHapusFoto.hidden = false; }; pra.onerror = () => { pra.hidden = true; tbHapusFoto.hidden = true; };
-  if (baru) pra.src = baru.url; else if (p[4] && p[6] !== -1) pra.src = `foto/${p[4]}.jpg${p[6] ? "?v=" + p[6] : ""}`; else pra.removeAttribute("src");
+  if (baru) pra.src = baru.url; else if (p[4] && p[6] !== -1) pra.src = `foto/${encodeURIComponent(p[4])}.jpg${Number(p[6]) > 0 ? "?v=" + Number(p[6]) : ""}`; else pra.removeAttribute("src");
   $("ketFoto").textContent = "";
   $("hapusProduk").hidden = i < 0; $("galatEdit").textContent = "";
   dlgEdit.showModal();
@@ -1885,7 +1907,7 @@ $("formEdit").addEventListener("submit", e => {
   e.preventDefault();
   const nama = $("fNama").value.trim().replace(/\s+/g, " ");
   if (!nama) { $("galatEdit").textContent = "Nama produk wajib diisi."; $("fNama").focus(); return; }
-  const kat = +$("fKategori").value, merek = $("fMerek").value.trim(), jenis = +$("fJenis").value, sorot = $("fSorot").value;
+  const kat = +$("fKategori").value, merek = $("fMerek").value.trim(), jenis = +$("fJenis").value ? 1 : 0, pilihSorot = $("fSorot").value, sorot = labelSah(pilihSorot) ? pilihSorot : "";
   const terlihat = new Set(), ukuran = [];
   $("fUkuran").querySelectorAll(".f-baris").forEach(b => {
     const label = b.querySelector(".f-label").value.trim().replace(/\s+/g, " "), isi = b.querySelector(".f-isi").value.replace(/\D/g, "");
@@ -1903,7 +1925,9 @@ $("formEdit").addEventListener("submit", e => {
   }
   if (admin.fotoDipilih) { fotoBaru.set(p[4], admin.fotoDipilih); fotoHapus.delete(p[4]); p[6] = Date.now(); }
   else if (admin.hapusFoto) { fotoBaru.delete(p[4]); fotoHapus.add(p[4]); p[6] = -1; }
-  admin.kotor++; dlgEdit.close(); gantiData(data); statusAdmin();
+  const bersih = rapikanData(data);
+  if (!bersih) { $("galatEdit").textContent = "Data produk tidak sah. Periksa lagi isiannya."; return; }
+  admin.kotor++; dlgEdit.close(); gantiData(bersih); statusAdmin();
 });
 $("hapusProduk").addEventListener("click", () => {
   const i = admin.edit; if (i < 0) return;
@@ -2032,8 +2056,9 @@ if ("serviceWorker" in navigator && (location.protocol === "https:" || location.
 if (location.protocol.indexOf("http") === 0) {
   fetch("produk.json", { cache: "no-cache" })
     .then(r => r.ok ? r.json() : null)
-    .then(d => {
-      if (admin.aktif || admin.kotor || !dataSah(d)) return;
+    .then(mentah => {
+      const d = rapikanData(mentah);
+      if (admin.aktif || admin.kotor || !d) return;
       if (JSON.stringify(d) !== JSON.stringify(PRODUK)) gantiData(d);
     }).catch(() => {});
 }
