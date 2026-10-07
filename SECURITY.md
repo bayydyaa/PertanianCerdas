@@ -1,21 +1,24 @@
-# Security Policy
+# Kebijakan Keamanan
 
-## Supported Versions
+Repo ini berisi e-katalog statis Toko Pertanian CV Azzahra Mutiara Tani
+(https://bayydyaa.github.io/PertanianCerdas/).
 
-Use this section to tell people about which versions of your project are
-currently being supported with security updates.
+## Versi yang didukung
 
-| Version | Supported          |
-| ------- | ------------------ |
-| 5.1.x   | :white_check_mark: |
-| 5.0.x   | :x:                |
-| 4.0.x   | :white_check_mark: |
-| < 4.0   | :x:                |
+Hanya versi yang sedang tayang di cabang `main` yang dipelihara.
 
-## Reporting a Vulnerability
+## Melaporkan celah keamanan
 
-Use this section to tell people how to report a vulnerability.
+Jangan menulis detail celah di Issue publik. Gunakan salah satu cara ini:
 
-Tell them where to go, how often they can expect to get an update on a
-reported vulnerability, what to expect if the vulnerability is accepted or
-declined, etc.
+1. Tab **Security** di repo ini, lalu **Report a vulnerability**.
+2. WhatsApp admin toko: 0823-5333-3662.
+
+Sertakan langkah untuk mengulang masalahnya dan perangkat/browser yang dipakai.
+Laporan akan dibalas secepatnya.
+
+## Catatan
+
+- Mode admin memakai token GitHub milik pemilik repo. Token tidak pernah disimpan di kode
+  atau di repo ini; hanya di perangkat admin.
+- Jangan pernah mengunggah token ke repo, Issue, atau tangkapan layar.
