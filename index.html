@@ -1751,19 +1751,35 @@ const ghApi = async (jalur, opsi = {}) => {
   return r;
 };
 const keB64 = teks => { const b = new TextEncoder().encode(teks); let s = ""; for (let i = 0; i < b.length; i += 8192) s += String.fromCharCode.apply(null, b.subarray(i, i + 8192)); return btoa(s); };
+/* Ubah jawaban gagal dari GitHub jadi penjelasan + langkah, bukan kode angka. */
+function galatGH(r, apa){
+  const benda = /^foto\//.test(apa) ? "foto produk" : "data produk";
+  const habis = r.headers && r.headers.get && r.headers.get("x-ratelimit-remaining") === "0";
+  let pesan, izinKurang = false;
+  if (r.status === 403 || r.status === 429) {
+    if (habis || r.status === 429) pesan = "GitHub membatasi sementara karena terlalu banyak permintaan. Tunggu beberapa menit, lalu tekan Simpan lagi.";
+    else { izinKurang = true; pesan = "Token ini belum punya izin menulis ke repo. Di GitHub, buka pengaturan token, ubah Contents jadi \"Read and write\", lalu tekan Simpan lagi."; }
+  }
+  else if (r.status === 404) pesan = "Token ini tidak bisa menjangkau repo " + GH.pemilik + "/" + GH.repo + ". Pastikan repo itu dipilih di pengaturan token.";
+  else if (r.status === 409) pesan = "Data di GitHub baru saja berubah. Tekan Simpan sekali lagi.";
+  else if (r.status === 413 || r.status === 422) pesan = "GitHub menolak " + benda + " ini (file terlalu besar atau isinya tidak diterima). Coba simpan lagi; kalau fotonya besar, ganti dengan foto lain.";
+  else if (r.status >= 500) pesan = "Server GitHub sedang bermasalah. Tunggu sebentar, lalu tekan Simpan lagi.";
+  else pesan = "GitHub menolak " + benda + " tanpa alasan yang dikenali (kode " + r.status + "). Coba lagi sebentar.";
+  return Object.assign(new Error(pesan), { izinKurang });
+}
 /* harapan = sha file saat terakhir kita baca (null = belum ada). Kalau di repo sudah beda,
    berarti ada yang mengubahnya dari tempat lain: tanya dulu sebelum menimpa. */
 async function ghSimpanFile(jalur, b64, pesan, harapan, ulang){
   const p = GH.folder + jalur;
   let sha;
   const ada = await ghApi(`/contents/${p}?ref=${encodeURIComponent(admin.cabang)}`, { cache: "no-store" });
-  if (ada.ok) sha = (await ada.json()).sha; else if (ada.status !== 404) throw new Error("Gagal membaca " + jalur + " (" + ada.status + ").");
+  if (ada.ok) sha = (await ada.json()).sha; else if (ada.status !== 404) throw galatGH(ada, jalur);
   if (harapan !== undefined && !ulang && (sha || null) !== harapan &&
       !confirm("Data produk di website sudah berubah sejak Anda masuk admin (mungkin diedit dari perangkat lain).\n\nOK = timpa dengan versi di layar ini.\nBatal = jangan simpan dulu."))
     throw new Error("Simpan dibatalkan.");
   const r = await ghApi(`/contents/${p}`, { method: "PUT", body: JSON.stringify({ message: pesan, content: b64, sha, branch: admin.cabang }) });
   if (r.status === 409 && !ulang) return ghSimpanFile(jalur, b64, pesan, harapan, true);
-  if (!r.ok) throw new Error("Gagal menyimpan " + jalur + " (" + r.status + ").");
+  if (!r.ok) throw galatGH(r, jalur);
   const hasil = await r.json().catch(() => ({}));
   return hasil && hasil.content ? hasil.content.sha : undefined;
 }
@@ -1772,13 +1788,13 @@ async function ghSimpanFile(jalur, b64, pesan, harapan, ulang){
 async function ghMuatData(){
   const r = await ghApi(`/contents/${GH.folder}produk.json?ref=${encodeURIComponent(admin.cabang)}`, { cache: "no-store" });
   if (r.status === 404) { admin.shaData = null; return; }             // belum pernah disimpan: pakai data bawaan
-  if (!r.ok) throw new Error("Gagal memuat data produk dari GitHub (" + r.status + ").");
+  if (!r.ok) throw galatGH(r, "produk.json");
   const d = await r.json();
   let teks;
   if (d.content) teks = new TextDecoder().decode(Uint8Array.from(atob(d.content.replace(/\s/g, "")), c => c.charCodeAt(0)));
   else {
     const mentah = await ghApi(`/contents/${GH.folder}produk.json?ref=${encodeURIComponent(admin.cabang)}`, { cache: "no-store", headers: { "Accept": "application/vnd.github.raw+json" } });
-    if (!mentah.ok) throw new Error("Gagal memuat data produk dari GitHub (" + mentah.status + ").");
+    if (!mentah.ok) throw galatGH(mentah, "produk.json");
     teks = await mentah.text();
   }
   let data;
@@ -1793,10 +1809,10 @@ async function ghHapusFile(jalur, pesan){
   const p = GH.folder + jalur;
   const ada = await ghApi(`/contents/${p}?ref=${encodeURIComponent(admin.cabang)}`, { cache: "no-store" });
   if (ada.status === 404) return;                      // memang sudah tidak ada
-  if (!ada.ok) throw new Error("Gagal membaca " + jalur + " (" + ada.status + ")");
+  if (!ada.ok) throw galatGH(ada, jalur);
   const sha = (await ada.json()).sha;
   const r = await ghApi(`/contents/${p}`, { method: "DELETE", body: JSON.stringify({ message: pesan, sha, branch: admin.cabang }) });
-  if (!r.ok && r.status !== 404) throw new Error("Gagal menghapus " + jalur + " (" + r.status + ")");
+  if (!r.ok && r.status !== 404) throw galatGH(r, jalur);
 }
 
 function statusAdmin(teks, jenis){
@@ -1822,7 +1838,7 @@ async function cekToken(token){
   const tolak = pesan => Object.assign(new Error(pesan), { tokenBuruk: true });
   if (r.status === 401) throw tolak("Token salah atau sudah kedaluwarsa.");
   if (r.status === 404) throw tolak("Token ini tidak punya akses ke repo " + GH.pemilik + "/" + GH.repo + ".");
-  if (!r.ok) throw new Error("GitHub menolak (" + r.status + "). Coba lagi sebentar.");
+  if (!r.ok) throw (r.status >= 500 ? new Error("Server GitHub sedang bermasalah. Coba lagi sebentar.") : galatGH(r, "produk.json"));
   const d = await r.json();
   if (!d.permissions || !d.permissions.push) throw tolak("Token belum diberi izin menulis (Contents: Read and write).");
   admin.cabang = d.default_branch || "main";
@@ -1998,7 +2014,13 @@ $("simpanAdmin").addEventListener("click", async () => {
     admin.kotor = 0;
     statusAdmin("Tersimpan. Website ikut berubah dalam 1–2 menit.", "sukses");
   } catch (err) {
-    if (err.tokenMati) {
+    if (err.izinKurang) {
+      statusAdmin("Token belum punya izin menulis. Perubahan Anda tidak hilang, jangan tutup halaman ini.", "galat");
+      $("judulMasuk").textContent = "Token belum bisa menyimpan";
+      $("galatMasuk").textContent = "Cara 1: di GitHub, edit token ini, ubah Contents jadi \"Read and write\", tekan Batal di sini, lalu Simpan lagi. Cara 2: tempel token lain yang izinnya sudah benar.";
+      $("repoAdmin").textContent = GH.pemilik + "/" + GH.repo;
+      if (bisaDialog && !dlgMasuk.open) dlgMasuk.showModal();
+    } else if (err.tokenMati) {
       statusAdmin("Token kedaluwarsa. Masukkan token baru; perubahan Anda tidak hilang.", "galat");
       $("judulMasuk").textContent = "Perbarui token"; $("galatMasuk").textContent = "Token lama sudah tidak berlaku. Tempel token baru untuk melanjutkan menyimpan.";
       $("repoAdmin").textContent = GH.pemilik + "/" + GH.repo;
