@@ -1,11 +1,11 @@
 /* Service worker E-Katalog CV Azzahra Mutiara Tani.
    - Halaman (index.html): ambil dari internet dulu supaya update langsung kelihatan,
      kalau offline pakai salinan terakhir.
-   - Data produk (produk.json): internet dulu, kalau offline pakai salinan terakhir.
+   - Data (produk.json, deskripsi.json, info.json): internet dulu, kalau offline pakai salinan terakhir.
    - Ikon & foto produk (folder foto/): pakai salinan dulu, perbarui diam-diam di belakang.
    - Hal di luar situs ini (Google Maps, WhatsApp, font) tidak disentuh.
    Naikkan angka VERSI kalau mau memaksa semua salinan lama dibuang. */
-const VERSI = "amt-v2";
+const VERSI = "amt-v3";
 const INTI = ["./", "manifest.webmanifest", "icon-192.png", "icon-512.png", "apple-touch-icon.png"];
 
 self.addEventListener("install", e => {
@@ -22,13 +22,14 @@ self.addEventListener("fetch", e => {
   const url = new URL(req.url);
   if (url.origin !== self.location.origin) return;
 
-  /* data produk: selalu coba yang terbaru dulu (supaya editan admin langsung kelihatan) */
-  if (url.pathname.endsWith("/produk.json")) {
+  /* data (produk, deskripsi, foto info): selalu coba yang terbaru dulu supaya editan admin langsung kelihatan */
+  if (url.pathname.endsWith(".json") && !url.pathname.endsWith(".webmanifest")) {
+    const nama = url.pathname.split("/").pop();
     e.respondWith(
       fetch(req).then(res => {
-        if (res.ok) { const salin = res.clone(); caches.open(VERSI).then(c => c.put("produk.json", salin)); }
+        if (res.ok) { const salin = res.clone(); caches.open(VERSI).then(c => c.put(nama, salin)); }
         return res;
-      }).catch(() => caches.match("produk.json"))
+      }).catch(() => caches.match(nama))
     );
     return;
   }
