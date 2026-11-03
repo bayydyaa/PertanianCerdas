@@ -60,7 +60,7 @@ h1,h2,h3,p{margin:0}
   radial-gradient(60% 45% at 12% 0%,rgba(255,255,255,.75),transparent 70%),
   radial-gradient(45% 40% at 95% 30%,rgba(201,153,58,.16),transparent 70%),
   linear-gradient(180deg,rgba(247,245,238,.58),rgba(240,246,238,.72))}
-.latar::after{content:"";position:absolute;inset:0;background:var(--butir);opacity:.13;mix-blend-mode:multiply}
+.latar::after{content:"";position:absolute;inset:0;background:var(--butir);opacity:.13}
 
 /* ---------- Kaca matte + kilau ---------- */
 .kaca{position:relative;background:var(--kaca);border:1px solid var(--garis-kaca);
@@ -748,28 +748,31 @@ body.admin .info-kartu{inset-inline-end:86px}
 .info-tambah input{position:absolute;inset:0;opacity:0;cursor:pointer}
 @media (max-width:520px){.info-baris{grid-template-columns:72px minmax(0,1fr)}.info-baris img{width:72px;height:54px}.info-aksi{grid-column:1 / -1;flex-direction:row;justify-content:flex-end}}
 
-/* ---------- Roda putar: nuansa daun ---------- */
-.roda{position:relative;isolation:isolate;z-index:0;margin:4px 0 46px;padding:22px 0 6px;scroll-margin-top:calc(var(--nav-h) + 14px)}
-.roda::before{content:"";position:absolute;inset:0 -6px auto;height:300px;z-index:-1;border-radius:32px;pointer-events:none;
-  background:radial-gradient(60% 70% at 50% 62%,rgba(47,155,82,.10),transparent 70%),
-  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 140 140'%3E%3Cg fill='%232f8c50' fill-opacity='.07'%3E%3Cpath d='M18 40c14-18 38-20 50-8-14 16-36 20-50 8Z'/%3E%3Cpath d='M96 104c10-16 30-20 40-10-12 14-30 18-40 10Z'/%3E%3Cpath d='M98 20c4 14-2 28-14 34-4-14 2-28 14-34Z'/%3E%3Cpath d='M30 112c2 12-4 22-14 26-2-12 4-22 14-26Z'/%3E%3C/g%3E%3C/svg%3E") repeat}
-.roda::after{content:"";position:absolute;inset:0 -6px auto;height:300px;z-index:-1;border-radius:32px;pointer-events:none;background:linear-gradient(180deg,transparent 55%,var(--mutiara,#f7f5ee))}
+/* ---------- Roda putar: kebun (tunas di gundukan tanah) ---------- */
+.roda{position:relative;isolation:isolate;z-index:0;margin:4px 0 46px;padding:22px 0 0;scroll-margin-top:calc(var(--nav-h) + 14px)}
+.roda::before{content:"";position:absolute;inset:0 -6px auto;height:330px;z-index:-1;border-radius:32px;pointer-events:none;
+  background:radial-gradient(38% 46% at 82% 18%,rgba(242,201,76,.22),transparent 70%),radial-gradient(70% 60% at 50% 88%,rgba(47,155,82,.12),transparent 72%),linear-gradient(180deg,rgba(255,250,232,.6),rgba(236,244,226,.55) 70%,transparent)}
 .roda-kepala{text-align:center}
 .roda-kepala h2{margin:0;font-size:clamp(24px,3.2vw,32px);letter-spacing:-.02em;color:var(--daun);line-height:1.15}
 .roda-kepala p{margin:6px 0 0;font-size:14px;color:var(--redup)}
-.roda-dial{position:relative;overflow:hidden;height:214px;max-width:680px;margin:2px auto 0;touch-action:pan-y;user-select:none;-webkit-user-select:none;cursor:grab;outline:none}
+.roda-dial{position:relative;overflow:hidden;height:236px;max-width:700px;margin:0 auto;touch-action:pan-y;user-select:none;-webkit-user-select:none;cursor:grab;outline:none}
 .roda-dial.diseret{cursor:grabbing}
 .roda-sulur{position:absolute;left:0;top:0;pointer-events:none}
-.roda-dial .dial-item{position:absolute;left:0;top:0;display:flex;flex-direction:column;align-items:center;gap:7px;padding:0;background:none;border:0;cursor:pointer;color:inherit;font:inherit;will-change:transform,opacity}
-.roda-dial .dial-ikon{position:relative;width:60px;height:60px;border-radius:50%;display:grid;place-items:center;background:#fff;border:1.5px solid rgba(47,140,80,.22);box-shadow:0 12px 22px -16px rgba(15,61,36,.6);color:var(--hijau);transition:background .3s,color .3s,border-color .3s,box-shadow .3s}
-.roda-dial .dial-ikon svg{width:25px;height:25px}
-.roda-dial .dial-ikon::after{content:"";position:absolute;right:-3px;top:-7px;width:13px;height:20px;border-radius:0 100% 0 100%;background:linear-gradient(160deg,#8fd18a,#2f9b52);transform:rotate(20deg) scale(0);transform-origin:0 100%;transition:transform .45s cubic-bezier(.34,1.56,.64,1)}
-.roda-dial .dial-nama{font-size:12.5px;font-weight:700;color:var(--redup);white-space:nowrap;transition:color .3s,opacity .3s}
-.roda-dial .dial-item.dekat .dial-ikon{background:linear-gradient(160deg,#3fae63,#1d7a3e);border-color:rgba(242,201,76,.9);color:#fff;box-shadow:0 0 0 5px rgba(47,155,82,.13),0 16px 28px -14px rgba(15,61,36,.75)}
-.roda-dial .dial-item.dekat .dial-ikon::after{transform:rotate(20deg) scale(1)}
-.roda-dial .dial-item.dekat .dial-nama{color:var(--daun)}
+.roda-dial .dial-item{position:absolute;left:0;top:0;padding:0;background:none;border:0;cursor:pointer;color:inherit;font:inherit;transform-origin:50% 100%;will-change:transform,opacity}
+.tunas{display:flex;flex-direction:column;align-items:center}
+.roda-dial .dial-ikon{position:relative;z-index:1;width:56px;height:56px;border-radius:50%;display:grid;place-items:center;background:#fffdf6;border:2px solid rgba(76,150,80,.35);box-shadow:0 10px 18px -12px rgba(60,40,20,.7);color:#2f8c50;transition:background .35s,color .35s,border-color .35s,box-shadow .35s,transform .5s cubic-bezier(.34,1.56,.64,1)}
+.roda-dial .dial-ikon svg{width:24px;height:24px}
+.batang{position:relative;width:4px;height:10px;margin-top:-2px;border-radius:2px;background:linear-gradient(180deg,#5fae55,#3c8a3e);transition:height .55s cubic-bezier(.34,1.56,.64,1)}
+.dn{position:absolute;bottom:2px;width:16px;height:9px;background:linear-gradient(135deg,#8fd18a,#3c9a45);transition:transform .5s cubic-bezier(.34,1.56,.64,1) .05s}
+.dn.kiri{right:2px;border-radius:9px 0 9px 0;transform-origin:100% 100%;transform:rotate(-8deg) scale(.35)}
+.dn.kanan{left:2px;border-radius:0 9px 0 9px;transform-origin:0 100%;transform:rotate(8deg) scale(.35)}
+.roda-dial .dial-item.dekat .batang{height:40px}
+.roda-dial .dial-item.dekat .dn.kiri{transform:rotate(-26deg) scale(1)}
+.roda-dial .dial-item.dekat .dn.kanan{transform:rotate(26deg) scale(1)}
+.roda-dial .dial-item.dekat .dial-ikon{background:radial-gradient(circle at 35% 30%,#5cc272,#1d7a3e 75%);border-color:#e9c46a;color:#fff;box-shadow:0 0 0 5px rgba(233,196,106,.22),0 14px 24px -12px rgba(15,61,36,.8);transform:scale(1.08)}
 .roda-dial .dial-item:focus-visible{outline:none}
 .roda-dial .dial-item:focus-visible .dial-ikon{outline:3px solid var(--emas);outline-offset:4px}
+.roda-nama{margin:-6px 0 10px;position:relative;z-index:2;text-align:center;font-size:17px;font-weight:800;color:var(--daun);letter-spacing:-.01em;min-height:24px;pointer-events:none}
 .roda-isi{position:relative;margin-top:4px;overflow:hidden}
 .roda-panel[hidden]{display:none!important}
 .roda-panel .info-pita{padding:0;max-width:none}
@@ -781,8 +784,10 @@ body.admin .info-kartu{inset-inline-end:86px}
 .roda-panel .percaya{margin-top:0}
 .cara-panel{border-radius:26px;padding:clamp(18px,3vw,30px);background:#fff;border:1px solid var(--garis)}
 .cara-panel .cara-aksi{margin-top:18px}
-@media (max-width:520px){.roda-dial .dial-item:not(.dekat) .dial-nama{opacity:0}}
-@media (max-width:640px){.roda-dial{height:196px}.roda-dial .dial-ikon{width:54px;height:54px}.roda-dial .dial-ikon svg{width:23px;height:23px}.roda-panel .rel-jalur .kartu{flex-basis:47%}.roda{margin-bottom:34px}}
+@media (max-width:640px){.roda-dial{height:212px}.roda-dial .dial-ikon{width:50px;height:50px}.roda-dial .dial-ikon svg{width:22px;height:22px}.roda-dial .dial-item.dekat .batang{height:34px}.roda-nama{font-size:16px;margin-top:-4px}.roda-panel .rel-jalur .kartu{flex-basis:47%}.roda{margin-bottom:34px}}
+/* ---------- kelancaran: lapisan latar tetap tidak dilukis ulang saat menggulir; blur kaca dikurangi di HP ---------- */
+.latar{transform:translateZ(0);contain:strict}
+@media (max-width:640px){.alat.kaca{-webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(255,255,255,.94)}.hero-lencana{-webkit-backdrop-filter:none;backdrop-filter:none}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
 
 /* =========================================================
@@ -1063,6 +1068,7 @@ d.classList.add("anim");setTimeout(function(){if(!window.__amtSiap)d.classList.r
   <section class="roda" id="roda" aria-labelledby="rodaJudul" data-testid="roda-putar">
     <div class="roda-kepala"><h2 id="rodaJudul" data-tx="dJudul">Mau lihat apa?</h2><p data-tx="dPetunjuk">Geser rodanya atau ketuk salah satu</p></div>
     <div class="roda-dial" id="rodaDial" role="tablist" aria-labelledby="rodaJudul"><canvas class="roda-sulur" id="rodaSulur" aria-hidden="true"></canvas></div>
+    <p class="roda-nama" id="rodaNama" aria-hidden="true"></p>
     <div class="roda-isi" id="rodaIsi" role="tabpanel">
       <div class="roda-panel" id="pInfo" hidden><section class="info-pita" id="infoPita" hidden aria-roledescription="carousel" data-t-attr="aria-label:infoToko" aria-label="Informasi toko">
   <div class="info-jalur" id="infoJalur"></div>
@@ -2883,12 +2889,13 @@ if (location.protocol.indexOf("http") === 0) {
 
 
 /* =========================================================
-   RODA PUTAR: ikon berjajar di atas sulur daun yang melengkung. Sulur dan daunnya ikut
-   bergeser saat roda diputar. Isi panel berganti setelah roda berhenti, dengan pudar halus.
+   RODA PUTAR "KEBUN": tiap pilihan adalah tunas yang tertanam di gundukan tanah melengkung.
+   Tanah, rumput, dan butir tanahnya ikut bergeser saat roda diputar; tunas yang berada di
+   tengah tumbuh tinggi dan daunnya membuka. Isi panel berganti setelah roda berhenti.
    ========================================================= */
 (function(){
   const GERAK = ANIM;
-  const elRoda = $("roda"), elDial = $("rodaDial"), elIsi = $("rodaIsi"), kanvas = $("rodaSulur");
+  const elRoda = $("roda"), elDial = $("rodaDial"), elIsi = $("rodaIsi"), kanvas = $("rodaSulur"), elNama = $("rodaNama");
   if (!elRoda) return;
   const ctx = kanvas.getContext("2d");
   const panel = { info: $("pInfo"), sorot: $("pSorot"), kategori: $("pKategori"), tentang: $("pTentang"), cara: $("pCara") };
@@ -2914,35 +2921,50 @@ if (location.protocol.indexOf("http") === 0) {
   /* bentuk lengkung: di HP jarak ikon dirapatkan supaya 5 ikon muat, lengkungnya dibuat lebih dalam */
   const jariDi = W => Math.min(330, W * .78);
   const langkahDi = W => Math.min(27, Math.asin(Math.min(1, (W / 2 - 40) / jariDi(W))) / 2 * 180 / Math.PI);
-  const lengkungDi = W => W < 520 ? 1.05 : .66;
-  const titikDi = (a, W) => { const R = jariDi(W); return [W / 2 + Math.sin(a) * R, H * .64 - R * lengkungDi(W) * (1 - Math.cos(a))]; };
+  const lengkungDi = W => W < 520 ? 1.05 : .42;
+  const titikDi = (a, W) => { const R = jariDi(W); return [W / 2 + Math.sin(a) * R, H * .72 - R * lengkungDi(W) * (1 - Math.cos(a))]; };
+  const TEBAL = () => L < 520 ? 22 : 28;
   function ukur(){
     L = elDial.clientWidth; H = elDial.clientHeight; const r = Math.min(2, devicePixelRatio || 1);
     kanvas.width = Math.round(L * r); kanvas.height = Math.round(H * r); kanvas.style.width = L + "px"; kanvas.style.height = H + "px";
     ctx.setTransform(r, 0, 0, r, 0, 0); gambar();
   }
-  /* sulur daun mengikuti lengkung; daun-daunnya bergeser saat roda diputar */
-  function daun(x, y, sudut, uk, al, terang){
-    ctx.save(); ctx.translate(x, y); ctx.rotate(sudut);
-    ctx.beginPath(); ctx.moveTo(0, 0); ctx.bezierCurveTo(uk * .35, -uk * .55, uk * .95, -uk * .45, uk * 1.15, 0); ctx.bezierCurveTo(uk * .95, uk * .4, uk * .35, uk * .45, 0, 0);
-    ctx.fillStyle = terang ? `rgba(126,190,120,${al})` : `rgba(47,140,80,${al})`; ctx.fill();
-    ctx.strokeStyle = `rgba(255,255,255,${al * .5})`; ctx.lineWidth = .8; ctx.beginPath(); ctx.moveTo(uk * .1, 0); ctx.lineTo(uk * .95, 0); ctx.stroke();
-    ctx.restore();
-  }
-  function sulur(LG){
+  /* gundukan tanah melengkung: butir tanah dan rumput ikut bergeser saat roda diputar */
+  let acak = 7; const r1 = () => (acak = (acak * 16807) % 2147483647) / 2147483647;
+  const BUTIR = Array.from({ length: 70 }, () => [r1() * 2 - 1, r1(), .6 + r1() * 1.3, r1() < .5]);
+  const RUMPUT = Array.from({ length: 40 }, () => [r1(), .7 + r1() * .6, r1() * 6.28]);
+  function tanah(LG){
     ctx.clearRect(0, 0, L, H);
-    const g = ctx.createLinearGradient(0, 0, L, 0);
-    g.addColorStop(0, "rgba(47,140,80,0)"); g.addColorStop(.18, "rgba(47,140,80,.45)"); g.addColorStop(.5, "rgba(47,140,80,.6)"); g.addColorStop(.82, "rgba(47,140,80,.45)"); g.addColorStop(1, "rgba(47,140,80,0)");
-    ctx.strokeStyle = g; ctx.lineWidth = 2.2; ctx.lineCap = "round"; ctx.beginPath();
-    for (let a = -1.45, m = true; a <= 1.45; a += .02) { const [x, y] = titikDi(a, L); m ? ctx.moveTo(x, y) : ctx.lineTo(x, y); m = false; }
-    ctx.stroke();
-    const frak = pos - Math.floor(pos);
-    for (let k = -10; k <= 10; k++) {
-      const d = k / 2 + .25 - frak, a = d * LG * Math.PI / 180; if (Math.abs(a) > 1.38) continue;
-      const [x, y] = titikDi(a, L), [x2, y2] = titikDi(a + .01, L), tg = Math.atan2(y2 - y, x2 - x);
-      const atas = (k & 1) === 0, al = Math.max(0, 1 - Math.abs(d) / 3.4) * .85;
-      daun(x, y, tg + (atas ? -.95 : .95) + Math.sin(performance.now() / 1400 + k) * .04, L < 520 ? 10 : 13, al, !atas);
-    }
+    const tb = TEBAL(), langkah = LG * Math.PI / 180, geser = pos * langkah, now = performance.now() / 1000;
+    const atas = [], R = jariDi(L), AMAX = Math.min(1.5, Math.max(langkah * 2.75, Math.asin(Math.min(1, L / 2 / R))));
+    for (let a = -AMAX; a <= AMAX + 1e-9; a += .02) atas.push(titikDi(a, L));
+    // badan tanah
+    const g = ctx.createLinearGradient(0, H * .5, 0, H);
+    g.addColorStop(0, "#9a6a3c"); g.addColorStop(.45, "#7a5230"); g.addColorStop(1, "#5a3b22");
+    ctx.beginPath(); atas.forEach(([x, y], i) => i ? ctx.lineTo(x, y) : ctx.moveTo(x, y));
+    for (let i = atas.length - 1; i >= 0; i--) ctx.lineTo(atas[i][0], atas[i][1] + tb + (i % 7 === 0 ? 1.5 : 0));
+    ctx.closePath(); ctx.fillStyle = g; ctx.fill();
+    // garis atas tanah yang lebih gelap (tanah gembur)
+    ctx.strokeStyle = "rgba(70,45,22,.55)"; ctx.lineWidth = 1.6; ctx.beginPath(); atas.forEach(([x, y], i) => i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)); ctx.stroke();
+    // butir tanah (ikut berputar)
+    BUTIR.forEach(([a0, dalam, r, terang]) => {
+      let a = ((a0 * AMAX - geser) % (2 * AMAX) + 3 * AMAX) % (2 * AMAX) - AMAX; const [x, y] = titikDi(a, L);
+      ctx.fillStyle = terang ? "rgba(196,150,96,.55)" : "rgba(52,32,16,.45)"; ctx.beginPath(); ctx.arc(x, y + 4 + dalam * (tb - 7), r, 0, 6.283); ctx.fill();
+    });
+    // rumput di permukaan (ikut berputar dan bergoyang pelan)
+    RUMPUT.forEach(([u, tinggi, fase]) => {
+      let a = ((u * 2 * AMAX - geser * 1) % (2 * AMAX) + 2 * AMAX) % (2 * AMAX) - AMAX; const [x, y] = titikDi(a, L), [x2, y2] = titikDi(a + .01, L);
+      const tg = Math.atan2(y2 - y, x2 - x), nx = Math.sin(tg), ny = -Math.cos(tg), h = (L < 520 ? 9 : 12) * tinggi, angin = Math.sin(now * 1.6 + fase) * 2.2;
+      [-3, 0, 3].forEach((o, j) => {
+        const bx = x + Math.cos(tg) * o, by = y + Math.sin(tg) * o + 1, tx = bx + nx * h + angin + (j - 1) * 2.5, ty = by + ny * h * (j === 1 ? 1.15 : .85);
+        ctx.strokeStyle = j === 1 ? "rgba(62,150,74,.9)" : "rgba(98,178,92,.85)"; ctx.lineWidth = 1.6; ctx.lineCap = "round";
+        ctx.beginPath(); ctx.moveTo(bx, by); ctx.quadraticCurveTo(bx + nx * h * .5, by + ny * h * .5, tx, ty); ctx.stroke();
+      });
+    });
+    // pinggir memudar
+    ctx.globalCompositeOperation = "destination-in";
+    const m = ctx.createLinearGradient(0, 0, L, 0); m.addColorStop(0, "rgba(0,0,0,0)"); m.addColorStop(.12, "#000"); m.addColorStop(.88, "#000"); m.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.fillStyle = m; ctx.fillRect(0, 0, L, H); ctx.globalCompositeOperation = "source-over";
   }
   function gambar(){
     if (!n() || !L) return;
@@ -2950,16 +2972,17 @@ if (location.protocol.indexOf("http") === 0) {
     tombol.forEach((b, i) => {
       const d = selisih(i, pos), a = d * LG * Math.PI / 180, j = Math.abs(d), [x, y] = titikDi(a, L);
       const sk = Math.max(.6, 1.14 - j * .19), op = j > 2.45 ? 0 : Math.max(0, 1 - j * .27);
-      b.style.transform = `translate(${x.toFixed(2)}px,${y.toFixed(2)}px) translate(-50%,-50%) scale(${sk.toFixed(3)})`;
+      b.style.transform = `translate(${x.toFixed(2)}px,${(y + 3).toFixed(2)}px) translate(-50%,-100%) scale(${sk.toFixed(3)})`;     // pangkal tunas menancap di tanah
       b.style.opacity = op.toFixed(3); b.style.pointerEvents = op < .2 ? "none" : ""; b.style.zIndex = 20 - Math.round(j * 4);
       b.classList.toggle("dekat", j < .5);
     });
-    if (GERAK) sulur(LG);
+    tanah(LG);
     const ia = bungkus(Math.round(pos));
     if (ia !== aktif) {
       const lama = aktif; aktif = ia;
       tombol.forEach((b, i) => { b.setAttribute("aria-selected", i === ia); b.tabIndex = i === ia ? 0 : -1; });
       if (lama >= 0) arah = selisih(ia, lama) >= 0 ? 1 : -1;
+      gantiNama(ITEM[ia], lama >= 0);
       jadwalPanel(lama >= 0);
     }
   }
@@ -2977,6 +3000,16 @@ if (location.protocol.indexOf("http") === 0) {
   }
   const pilihSendiri = () => { sudahDipilih = true; };
   const keIndeks = i => { pilihSendiri(); animasi(pos + selisih(i, pos)); };
+  /* nama pilihan di bawah gundukan tanah, berganti dengan geser halus searah putaran */
+  function gantiNama(it, halus){
+    if (!elNama || !it) return;
+    if (!GERAK || !halus || !elNama.animate) { elNama.textContent = it.nama; return; }
+    elNama.getAnimations().forEach(a => a.cancel());
+    elNama.animate([{ opacity: 1, transform: "none" }, { opacity: 0, transform: `translateX(${-arah * 14}px)` }], { duration: 120, easing: "ease-in" }).onfinish = () => {
+      elNama.textContent = it.nama;
+      elNama.animate([{ opacity: 0, transform: `translateX(${arah * 14}px)` }, { opacity: 1, transform: "none" }], { duration: 260, easing: "cubic-bezier(.2,.8,.3,1)" });
+    };
+  }
   /* isi panel diganti sekali saja setelah roda tenang, supaya putaran cepat tidak membuat isi berkedip */
   let jedaPanel = null;
   function jadwalPanel(halus){
@@ -3007,13 +3040,12 @@ if (location.protocol.indexOf("http") === 0) {
     tombol = ITEM.map((it, i) => {
       const b = document.createElement("button"); b.type = "button"; b.className = "dial-item"; b.setAttribute("role", "tab"); b.tabIndex = -1;
       b.setAttribute("aria-label", it.nama); b.dataset.id = it.id;
-      b.innerHTML = `<span class="dial-ikon">${it.ikon}</span><span class="dial-nama"></span>`;
-      b.querySelector(".dial-nama").textContent = it.nama;
+      b.innerHTML = `<span class="tunas"><span class="dial-ikon">${it.ikon}</span><span class="batang"><i class="dn kiri"></i><i class="dn kanan"></i></span></span>`;
       b.addEventListener("click", () => { if (!geserJauh) keIndeks(i); });
       elDial.appendChild(b); return b;
     });
     let i = sudahDipilih && lamaId ? ITEM.findIndex(it => it.id === lamaId) : 0; if (i < 0) i = 0;
-    pos = i; aktif = -1; panelKini = null; ukur();
+    pos = i; aktif = -1; panelKini = null; ukur(); if (elNama && ITEM[aktif]) elNama.textContent = ITEM[aktif].nama;
     clearTimeout(jedaPanel); tampilkan(ITEM[aktif], false);
   }
   /* geser dengan jari / mouse */
@@ -3045,7 +3077,7 @@ if (location.protocol.indexOf("http") === 0) {
   if (GERAK) {
     let terlihat = false;
     new IntersectionObserver(es => { terlihat = es.some(e => e.isIntersecting); }).observe(elDial);
-    const goyang = () => { if (terlihat && !tekan && !document.hidden) sulur(langkahDi(L)); setTimeout(() => requestAnimationFrame(goyang), 60); };
+    const goyang = () => { if (terlihat && !tekan && !document.hidden && L) tanah(langkahDi(L)); setTimeout(() => requestAnimationFrame(goyang), 33); };
     goyang();
   }
   /* sekali saja: roda bergoyang saat pertama terlihat, tanda bisa diputar */
