@@ -748,24 +748,29 @@ body.admin .info-kartu{inset-inline-end:86px}
 .info-tambah input{position:absolute;inset:0;opacity:0;cursor:pointer}
 @media (max-width:520px){.info-baris{grid-template-columns:72px minmax(0,1fr)}.info-baris img{width:72px;height:54px}.info-aksi{grid-column:1 / -1;flex-direction:row;justify-content:flex-end}}
 
-/* ---------- Roda putar (pengganti info, sorotan, kategori, keunggulan, cara pesan) ---------- */
-.roda{margin:4px 0 46px;scroll-margin-top:calc(var(--nav-h) + 14px)}
+/* ---------- Roda putar: nuansa daun ---------- */
+.roda{position:relative;isolation:isolate;z-index:0;margin:4px 0 46px;padding:22px 0 6px;scroll-margin-top:calc(var(--nav-h) + 14px)}
+.roda::before{content:"";position:absolute;inset:0 -6px auto;height:300px;z-index:-1;border-radius:32px;pointer-events:none;
+  background:radial-gradient(60% 70% at 50% 62%,rgba(47,155,82,.10),transparent 70%),
+  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 140 140'%3E%3Cg fill='%232f8c50' fill-opacity='.07'%3E%3Cpath d='M18 40c14-18 38-20 50-8-14 16-36 20-50 8Z'/%3E%3Cpath d='M96 104c10-16 30-20 40-10-12 14-30 18-40 10Z'/%3E%3Cpath d='M98 20c4 14-2 28-14 34-4-14 2-28 14-34Z'/%3E%3Cpath d='M30 112c2 12-4 22-14 26-2-12 4-22 14-26Z'/%3E%3C/g%3E%3C/svg%3E") repeat}
+.roda::after{content:"";position:absolute;inset:0 -6px auto;height:300px;z-index:-1;border-radius:32px;pointer-events:none;background:linear-gradient(180deg,transparent 55%,var(--mutiara,#f7f5ee))}
 .roda-kepala{text-align:center}
 .roda-kepala h2{margin:0;font-size:clamp(24px,3.2vw,32px);letter-spacing:-.02em;color:var(--daun);line-height:1.15}
 .roda-kepala p{margin:6px 0 0;font-size:14px;color:var(--redup)}
-.roda-dial{position:relative;overflow:hidden;height:196px;max-width:660px;margin:8px auto 0;touch-action:pan-y;user-select:none;-webkit-user-select:none;cursor:grab;outline:none}
+.roda-dial{position:relative;overflow:hidden;height:214px;max-width:680px;margin:2px auto 0;touch-action:pan-y;user-select:none;-webkit-user-select:none;cursor:grab;outline:none}
 .roda-dial.diseret{cursor:grabbing}
-.roda-dial::before{content:"";position:absolute;left:50%;top:58%;width:min(94%,580px);aspect-ratio:4.4/1;transform:translate(-50%,-3%);border-radius:50%;border-top:1.5px dashed rgba(201,153,58,.55);pointer-events:none}
-.roda-dial .dial-item{position:absolute;left:0;top:0;display:flex;flex-direction:column;align-items:center;gap:7px;padding:0;background:none;border:0;cursor:pointer;color:inherit;font:inherit;will-change:transform,opacity;transition:opacity .2s}
-.roda-dial .dial-ikon{width:62px;height:62px;border-radius:50%;display:grid;place-items:center;background:#fff;border:1.5px solid var(--garis);box-shadow:0 14px 26px -18px rgba(15,61,36,.6);color:var(--hijau);transition:background .25s,color .25s,border-color .25s,box-shadow .25s}
-.roda-dial .dial-ikon svg{width:26px;height:26px}
-.roda-dial .dial-ikon.s-laris{color:#c8443c}.roda-dial .dial-ikon.s-unggulan{color:#b8860b}.roda-dial .dial-ikon.s-viral{color:#7c4dbe}
-.roda-dial .dial-nama{font-size:12.5px;font-weight:700;color:var(--redup);white-space:nowrap;transition:color .25s}
-.roda-dial .dial-item.dekat .dial-ikon{background:linear-gradient(180deg,#f3d58a,#d6aa54);border-color:transparent;color:#3a2a05;box-shadow:0 0 0 6px rgba(214,170,84,.22),0 18px 30px -14px rgba(150,105,20,.9)}
-.roda-dial .dial-item.dekat .dial-nama{color:var(--teks)}
+.roda-sulur{position:absolute;left:0;top:0;pointer-events:none}
+.roda-dial .dial-item{position:absolute;left:0;top:0;display:flex;flex-direction:column;align-items:center;gap:7px;padding:0;background:none;border:0;cursor:pointer;color:inherit;font:inherit;will-change:transform,opacity}
+.roda-dial .dial-ikon{position:relative;width:60px;height:60px;border-radius:50%;display:grid;place-items:center;background:#fff;border:1.5px solid rgba(47,140,80,.22);box-shadow:0 12px 22px -16px rgba(15,61,36,.6);color:var(--hijau);transition:background .3s,color .3s,border-color .3s,box-shadow .3s}
+.roda-dial .dial-ikon svg{width:25px;height:25px}
+.roda-dial .dial-ikon::after{content:"";position:absolute;right:-3px;top:-7px;width:13px;height:20px;border-radius:0 100% 0 100%;background:linear-gradient(160deg,#8fd18a,#2f9b52);transform:rotate(20deg) scale(0);transform-origin:0 100%;transition:transform .45s cubic-bezier(.34,1.56,.64,1)}
+.roda-dial .dial-nama{font-size:12.5px;font-weight:700;color:var(--redup);white-space:nowrap;transition:color .3s,opacity .3s}
+.roda-dial .dial-item.dekat .dial-ikon{background:linear-gradient(160deg,#3fae63,#1d7a3e);border-color:rgba(242,201,76,.9);color:#fff;box-shadow:0 0 0 5px rgba(47,155,82,.13),0 16px 28px -14px rgba(15,61,36,.75)}
+.roda-dial .dial-item.dekat .dial-ikon::after{transform:rotate(20deg) scale(1)}
+.roda-dial .dial-item.dekat .dial-nama{color:var(--daun)}
 .roda-dial .dial-item:focus-visible{outline:none}
 .roda-dial .dial-item:focus-visible .dial-ikon{outline:3px solid var(--emas);outline-offset:4px}
-.roda-isi{position:relative;margin-top:6px;overflow:hidden}
+.roda-isi{position:relative;margin-top:4px;overflow:hidden}
 .roda-panel[hidden]{display:none!important}
 .roda-panel .info-pita{padding:0;max-width:none}
 .roda-panel .info-pita[hidden]{display:none}
@@ -777,8 +782,8 @@ body.admin .info-kartu{inset-inline-end:86px}
 .cara-panel{border-radius:26px;padding:clamp(18px,3vw,30px);background:#fff;border:1px solid var(--garis)}
 .cara-panel .cara-aksi{margin-top:18px}
 @media (max-width:520px){.roda-dial .dial-item:not(.dekat) .dial-nama{opacity:0}}
-@media (max-width:640px){.roda-dial{height:170px}.roda-dial .dial-ikon{width:56px;height:56px}.roda-dial .dial-ikon svg{width:24px;height:24px}.roda-panel .rel-jalur .kartu{flex-basis:47%}.roda{margin-bottom:34px}}
-@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+@media (max-width:640px){.roda-dial{height:196px}.roda-dial .dial-ikon{width:54px;height:54px}.roda-dial .dial-ikon svg{width:23px;height:23px}.roda-panel .rel-jalur .kartu{flex-basis:47%}.roda{margin-bottom:34px}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
 
 /* =========================================================
    REDESIGN 2026 — lapisan tampilan baru (menimpa gaya lama).
@@ -1057,7 +1062,7 @@ d.classList.add("anim");setTimeout(function(){if(!window.__amtSiap)d.classList.r
 <main class="katalog wrap" id="katalog">
   <section class="roda" id="roda" aria-labelledby="rodaJudul" data-testid="roda-putar">
     <div class="roda-kepala"><h2 id="rodaJudul" data-tx="dJudul">Mau lihat apa?</h2><p data-tx="dPetunjuk">Geser rodanya atau ketuk salah satu</p></div>
-    <div class="roda-dial" id="rodaDial" role="tablist" aria-labelledby="rodaJudul"></div>
+    <div class="roda-dial" id="rodaDial" role="tablist" aria-labelledby="rodaJudul"><canvas class="roda-sulur" id="rodaSulur" aria-hidden="true"></canvas></div>
     <div class="roda-isi" id="rodaIsi" role="tabpanel">
       <div class="roda-panel" id="pInfo" hidden><section class="info-pita" id="infoPita" hidden aria-roledescription="carousel" data-t-attr="aria-label:infoToko" aria-label="Informasi toko">
   <div class="info-jalur" id="infoJalur"></div>
@@ -2628,7 +2633,7 @@ $("formInfo").addEventListener("submit", e => {
    + perbaikan kecil. Teks 5 bahasa ada di TX.
    ========================================================= */
 const TX = {
-  id: { navKatalog: "Katalog", navCara: "Cara pesan", navLokasi: "Lokasi", dJudul: "Mau lihat apa?", dPetunjuk: "Geser rodanya atau ketuk salah satu", dInfo: "Info & promo", dKategori: "Kategori", dTentang: "Tentang toko", dCara: "Cara pesan",
+  id: { navKatalog: "Katalog", navCara: "Cara pesan", navLokasi: "Lokasi", dInfoP: "Pengumuman dan promo terbaru dari toko.", dMilikP: "Produk andalan toko kami.", dLarisP: "Paling sering dibeli pelanggan.", dUnggulP: "Pilihan terbaik dari kami.", dViralP: "Sedang ramai dicari pelanggan.", dTentangP: "Kenapa belanja di CV Azzahra Mutiara Tani.", dJudul: "Mau lihat apa?", dPetunjuk: "Geser rodanya atau ketuk salah satu", dInfo: "Info & promo", dKategori: "Kategori", dTentang: "Tentang toko", dCara: "Cara pesan",
     poin: ["Cek harga & stok lewat WhatsApp", "Bisa datang langsung ke toko", "Tersedia 5 bahasa"],
     lencana: "produk di katalog",
     t1J: "{n} produk", t1P: "Pestisida, benih, pupuk, dan alat tani",
@@ -2644,7 +2649,7 @@ const TX = {
     ajakJ: "Tidak menemukan produk yang dicari?", ajakP: "Tanyakan langsung ke admin kami. Kami bantu carikan produk yang cocok untuk tanaman Anda.", ajakBtn: "Tanya admin",
     kosongWa: "Tanya admin", ditambah: "Ditambahkan ke daftar", lihat: "Lihat daftar",
     hak: "© {y} CV Azzahra Mutiara Tani · Palu, Sulawesi Tengah" },
-  ms: { navKatalog: "Katalog", navCara: "Cara memesan", navLokasi: "Lokasi", dJudul: "Mahu lihat apa?", dPetunjuk: "Leret roda atau ketik salah satu", dInfo: "Info & promosi", dKategori: "Kategori", dTentang: "Tentang kedai", dCara: "Cara memesan",
+  ms: { navKatalog: "Katalog", navCara: "Cara memesan", navLokasi: "Lokasi", dInfoP: "Pengumuman dan promosi terkini dari kedai.", dMilikP: "Produk andalan kedai kami.", dLarisP: "Paling kerap dibeli pelanggan.", dUnggulP: "Pilihan terbaik daripada kami.", dViralP: "Sedang hangat dicari pelanggan.", dTentangP: "Mengapa membeli di CV Azzahra Mutiara Tani.", dJudul: "Mahu lihat apa?", dPetunjuk: "Leret roda atau ketik salah satu", dInfo: "Info & promosi", dKategori: "Kategori", dTentang: "Tentang kedai", dCara: "Cara memesan",
     poin: ["Semak harga & stok melalui WhatsApp", "Boleh datang terus ke kedai", "Tersedia dalam 5 bahasa"],
     lencana: "produk dalam katalog",
     t1J: "{n} produk", t1P: "Racun perosak, benih, baja dan alat tani",
@@ -2660,7 +2665,7 @@ const TX = {
     ajakJ: "Tidak jumpa produk yang dicari?", ajakP: "Tanya terus admin kami. Kami bantu carikan produk yang sesuai untuk tanaman anda.", ajakBtn: "Tanya admin",
     kosongWa: "Tanya admin", ditambah: "Ditambah ke senarai", lihat: "Lihat senarai",
     hak: "© {y} CV Azzahra Mutiara Tani · Palu, Sulawesi Tengah" },
-  en: { navKatalog: "Catalog", navCara: "How to order", navLokasi: "Location", dJudul: "What would you like to see?", dPetunjuk: "Swipe the wheel or tap one", dInfo: "News & promos", dKategori: "Categories", dTentang: "About the store", dCara: "How to order",
+  en: { navKatalog: "Catalog", navCara: "How to order", navLokasi: "Location", dInfoP: "Latest news and promos from the store.", dMilikP: "Our store's own products.", dLarisP: "What customers buy most.", dUnggulP: "Our top picks.", dViralP: "Trending with customers right now.", dTentangP: "Why shop at CV Azzahra Mutiara Tani.", dJudul: "What would you like to see?", dPetunjuk: "Swipe the wheel or tap one", dInfo: "News & promos", dKategori: "Categories", dTentang: "About the store", dCara: "How to order",
     poin: ["Check price & stock on WhatsApp", "Visit our physical store", "Available in 5 languages"],
     lencana: "products in catalog",
     t1J: "{n} products", t1P: "Pesticides, seeds, fertilizers and farm tools",
@@ -2676,7 +2681,7 @@ const TX = {
     ajakJ: "Can't find what you're looking for?", ajakP: "Ask our admin directly. We'll help you find the right product for your crops.", ajakBtn: "Ask admin",
     kosongWa: "Ask admin", ditambah: "Added to list", lihat: "View list",
     hak: "© {y} CV Azzahra Mutiara Tani · Palu, Central Sulawesi" },
-  zh: { navKatalog: "产品目录", navCara: "订购方式", navLokasi: "门店位置", dJudul: "想看什么？", dPetunjuk: "滑动转盘或点选一项", dInfo: "资讯与促销", dKategori: "分类", dTentang: "关于本店", dCara: "订购方式",
+  zh: { navKatalog: "产品目录", navCara: "订购方式", navLokasi: "门店位置", dInfoP: "本店最新公告与促销。", dMilikP: "本店自有产品。", dLarisP: "顾客最常购买的产品。", dUnggulP: "我们的精选推荐。", dViralP: "顾客正在热搜的产品。", dTentangP: "为什么选择 CV Azzahra Mutiara Tani。", dJudul: "想看什么？", dPetunjuk: "滑动转盘或点选一项", dInfo: "资讯与促销", dKategori: "分类", dTentang: "关于本店", dCara: "订购方式",
     poin: ["通过 WhatsApp 查询价格和库存", "欢迎到实体店选购", "支持 5 种语言"],
     lencana: "种目录产品",
     t1J: "{n} 种产品", t1P: "农药、种子、肥料和农具",
@@ -2692,7 +2697,7 @@ const TX = {
     ajakJ: "没有找到想要的产品？", ajakP: "直接咨询我们的客服，我们帮您找到适合作物的产品。", ajakBtn: "咨询客服",
     kosongWa: "咨询客服", ditambah: "已加入清单", lihat: "查看清单",
     hak: "© {y} CV Azzahra Mutiara Tani · 中苏拉威西省帕卢" },
-  ar: { navKatalog: "الكتالوج", navCara: "طريقة الطلب", navLokasi: "الموقع", dJudul: "ماذا تريد أن ترى؟", dPetunjuk: "اسحب العجلة أو اضغط على أحدها", dInfo: "الأخبار والعروض", dKategori: "الفئات", dTentang: "عن المتجر", dCara: "طريقة الطلب",
+  ar: { navKatalog: "الكتالوج", navCara: "طريقة الطلب", navLokasi: "الموقع", dInfoP: "أحدث الإعلانات والعروض من المتجر.", dMilikP: "منتجات متجرنا الخاصة.", dLarisP: "الأكثر شراءً من قبل العملاء.", dUnggulP: "أفضل اختياراتنا.", dViralP: "الأكثر بحثًا حاليًا.", dTentangP: "لماذا تتسوق من CV Azzahra Mutiara Tani.", dJudul: "ماذا تريد أن ترى؟", dPetunjuk: "اسحب العجلة أو اضغط على أحدها", dInfo: "الأخبار والعروض", dKategori: "الفئات", dTentang: "عن المتجر", dCara: "طريقة الطلب",
     poin: ["استفسر عن السعر والمخزون عبر واتساب", "يمكنك زيارة المتجر مباشرة", "متاح بـ 5 لغات"],
     lencana: "منتج في الكتالوج",
     t1J: "{n} منتج", t1P: "مبيدات وبذور وأسمدة وأدوات زراعية",
@@ -2878,13 +2883,14 @@ if (location.protocol.indexOf("http") === 0) {
 
 
 /* =========================================================
-   RODA PUTAR: info & promo, sorotan produk, kategori, tentang toko, dan cara pesan
-   dipindah ke satu roda yang bisa digeser atau diketuk.
+   RODA PUTAR: ikon berjajar di atas sulur daun yang melengkung. Sulur dan daunnya ikut
+   bergeser saat roda diputar. Isi panel berganti setelah roda berhenti, dengan pudar halus.
    ========================================================= */
 (function(){
-  const KURANG_GERAK = !ANIM;
-  const elRoda = $("roda"), elDial = $("rodaDial"), elIsi = $("rodaIsi");
+  const GERAK = ANIM;
+  const elRoda = $("roda"), elDial = $("rodaDial"), elIsi = $("rodaIsi"), kanvas = $("rodaSulur");
   if (!elRoda) return;
+  const ctx = kanvas.getContext("2d");
   const panel = { info: $("pInfo"), sorot: $("pSorot"), kategori: $("pKategori"), tentang: $("pTentang"), cara: $("pCara") };
   const IKON = {
     info:'<path d="M4 10v4h3l6 4V6L7 10Z"/><path d="M16.500 9a4 4 0 0 1 0 6M19 6.500a7.500 7.500 0 0 1 0 11"/>',
@@ -2893,7 +2899,6 @@ if (location.protocol.indexOf("http") === 0) {
     cara:'<path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.500" cy="6" r="1.200" fill="currentColor"/><circle cx="4.500" cy="12" r="1.200" fill="currentColor"/><circle cx="4.500" cy="18" r="1.200" fill="currentColor"/>'
   };
   const ikon = d => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
-  /* daftar isi roda dibangun dari data yang ada (label sorotan yang kosong / info yang kosong tidak ikut) */
   function daftarIsi(){
     const isi = [];
     if (infoAktif().length) isi.push({ id: "info", nama: tx("dInfo"), ikon: ikon(IKON.info), p: "info" });
@@ -2903,81 +2908,121 @@ if (location.protocol.indexOf("http") === 0) {
     isi.push({ id: "cara", nama: tx("dCara"), ikon: ikon(IKON.cara), p: "cara" });
     return isi;
   }
-  let ITEM = [], tombol = [], pos = 0, aktif = -1, anim = null, geserJauh = false, panelKini = null, sudahDipilih = false;
-  const n = () => ITEM.length;
-  const bungkus = x => ((x % n()) + n()) % n();
+  let ITEM = [], tombol = [], pos = 0, aktif = -1, anim = null, geserJauh = false, panelKini = null, sudahDipilih = false, arah = 1, L = 0, H = 0;
+  const n = () => ITEM.length, bungkus = x => ((x % n()) + n()) % n();
   function selisih(i, p){ let d = i - p, m = n(); d = ((d % m) + m) % m; if (d > m / 2) d -= m; return d; }
-  const jariDi = L => Math.min(330, L * .78);
-  const langkahDi = L => Math.min(30, Math.asin(Math.min(1, (L / 2 - 38) / jariDi(L))) / 2 * 180 / Math.PI);
+  /* bentuk lengkung: di HP jarak ikon dirapatkan supaya 5 ikon muat, lengkungnya dibuat lebih dalam */
+  const jariDi = W => Math.min(330, W * .78);
+  const langkahDi = W => Math.min(27, Math.asin(Math.min(1, (W / 2 - 40) / jariDi(W))) / 2 * 180 / Math.PI);
+  const lengkungDi = W => W < 520 ? 1.05 : .66;
+  const titikDi = (a, W) => { const R = jariDi(W); return [W / 2 + Math.sin(a) * R, H * .64 - R * lengkungDi(W) * (1 - Math.cos(a))]; };
+  function ukur(){
+    L = elDial.clientWidth; H = elDial.clientHeight; const r = Math.min(2, devicePixelRatio || 1);
+    kanvas.width = Math.round(L * r); kanvas.height = Math.round(H * r); kanvas.style.width = L + "px"; kanvas.style.height = H + "px";
+    ctx.setTransform(r, 0, 0, r, 0, 0); gambar();
+  }
+  /* sulur daun mengikuti lengkung; daun-daunnya bergeser saat roda diputar */
+  function daun(x, y, sudut, uk, al, terang){
+    ctx.save(); ctx.translate(x, y); ctx.rotate(sudut);
+    ctx.beginPath(); ctx.moveTo(0, 0); ctx.bezierCurveTo(uk * .35, -uk * .55, uk * .95, -uk * .45, uk * 1.15, 0); ctx.bezierCurveTo(uk * .95, uk * .4, uk * .35, uk * .45, 0, 0);
+    ctx.fillStyle = terang ? `rgba(126,190,120,${al})` : `rgba(47,140,80,${al})`; ctx.fill();
+    ctx.strokeStyle = `rgba(255,255,255,${al * .5})`; ctx.lineWidth = .8; ctx.beginPath(); ctx.moveTo(uk * .1, 0); ctx.lineTo(uk * .95, 0); ctx.stroke();
+    ctx.restore();
+  }
+  function sulur(LG){
+    ctx.clearRect(0, 0, L, H);
+    const g = ctx.createLinearGradient(0, 0, L, 0);
+    g.addColorStop(0, "rgba(47,140,80,0)"); g.addColorStop(.18, "rgba(47,140,80,.45)"); g.addColorStop(.5, "rgba(47,140,80,.6)"); g.addColorStop(.82, "rgba(47,140,80,.45)"); g.addColorStop(1, "rgba(47,140,80,0)");
+    ctx.strokeStyle = g; ctx.lineWidth = 2.2; ctx.lineCap = "round"; ctx.beginPath();
+    for (let a = -1.45, m = true; a <= 1.45; a += .02) { const [x, y] = titikDi(a, L); m ? ctx.moveTo(x, y) : ctx.lineTo(x, y); m = false; }
+    ctx.stroke();
+    const frak = pos - Math.floor(pos);
+    for (let k = -10; k <= 10; k++) {
+      const d = k / 2 + .25 - frak, a = d * LG * Math.PI / 180; if (Math.abs(a) > 1.38) continue;
+      const [x, y] = titikDi(a, L), [x2, y2] = titikDi(a + .01, L), tg = Math.atan2(y2 - y, x2 - x);
+      const atas = (k & 1) === 0, al = Math.max(0, 1 - Math.abs(d) / 3.4) * .85;
+      daun(x, y, tg + (atas ? -.95 : .95) + Math.sin(performance.now() / 1400 + k) * .04, L < 520 ? 10 : 13, al, !atas);
+    }
+  }
   function gambar(){
-    const L = elDial.clientWidth, cx = L / 2, R = jariDi(L), dasar = elDial.clientHeight * .58, LG = langkahDi(L);
+    if (!n() || !L) return;
+    const LG = langkahDi(L);
     tombol.forEach((b, i) => {
-      const d = selisih(i, pos), a = d * LG * Math.PI / 180, j = Math.abs(d);
-      const x = cx + Math.sin(a) * R, y = dasar - R * .4 * (1 - Math.cos(a));     // lengkung dibuat landai supaya ikon pinggir tidak terpotong
-      const sk = Math.max(.6, 1.15 - j * .19), op = j > 2.45 ? 0 : Math.max(0, 1 - j * .26);
-      b.style.transform = `translate(${x}px,${y}px) translate(-50%,-50%) scale(${sk})`;
-      b.style.opacity = op; b.style.pointerEvents = op < .2 ? "none" : ""; b.style.zIndex = 100 - Math.round(j * 10);
+      const d = selisih(i, pos), a = d * LG * Math.PI / 180, j = Math.abs(d), [x, y] = titikDi(a, L);
+      const sk = Math.max(.6, 1.14 - j * .19), op = j > 2.45 ? 0 : Math.max(0, 1 - j * .27);
+      b.style.transform = `translate(${x.toFixed(2)}px,${y.toFixed(2)}px) translate(-50%,-50%) scale(${sk.toFixed(3)})`;
+      b.style.opacity = op.toFixed(3); b.style.pointerEvents = op < .2 ? "none" : ""; b.style.zIndex = 20 - Math.round(j * 4);
       b.classList.toggle("dekat", j < .5);
     });
+    if (GERAK) sulur(LG);
     const ia = bungkus(Math.round(pos));
-    if (ia !== aktif) { aktif = ia; tandai(); tampilkan(ITEM[ia]); }
+    if (ia !== aktif) {
+      const lama = aktif; aktif = ia;
+      tombol.forEach((b, i) => { b.setAttribute("aria-selected", i === ia); b.tabIndex = i === ia ? 0 : -1; });
+      if (lama >= 0) arah = selisih(ia, lama) >= 0 ? 1 : -1;
+      jadwalPanel(lama >= 0);
+    }
   }
-  function tandai(){ tombol.forEach((b, i) => { b.setAttribute("aria-selected", i === aktif); b.tabIndex = i === aktif ? 0 : -1; }); }
   function animasi(tujuan){
     cancelAnimationFrame(anim);
-    if (KURANG_GERAK) { pos = tujuan; gambar(); return; }
+    if (!GERAK) { pos = tujuan; gambar(); return; }
     let v = 0, t0 = performance.now();
     const jalan = now => {
       const dt = Math.min(.032, (now - t0) / 1000); t0 = now;
-      const k = 120, a = k * (tujuan - pos) - 2 * Math.sqrt(k) * v; v += a * dt; pos += v * dt;
-      if (Math.abs(tujuan - pos) < .0008 && Math.abs(v) < .002) { pos = tujuan; gambar(); return; }
+      const k = 105, a = k * (tujuan - pos) - 2 * Math.sqrt(k) * v; v += a * dt; pos += v * dt;
+      if (Math.abs(tujuan - pos) < .0006 && Math.abs(v) < .002) { pos = tujuan; gambar(); return; }
       gambar(); anim = requestAnimationFrame(jalan);
     };
     anim = requestAnimationFrame(jalan);
   }
-  const keIndeks = i => { sudahDipilih = true; animasi(pos + selisih(i, pos)); };
-  /* ganti isi panel dengan pudar halus + tinggi yang menyesuaikan */
-  function tampilkan(it){
+  const pilihSendiri = () => { sudahDipilih = true; };
+  const keIndeks = i => { pilihSendiri(); animasi(pos + selisih(i, pos)); };
+  /* isi panel diganti sekali saja setelah roda tenang, supaya putaran cepat tidak membuat isi berkedip */
+  let jedaPanel = null;
+  function jadwalPanel(halus){
+    clearTimeout(jedaPanel);
+    jedaPanel = setTimeout(() => tampilkan(ITEM[aktif], halus), halus && GERAK ? 110 : 0);
+  }
+  function tampilkan(it, halus){
     if (!it) return;
-    const baru = panel[it.p];
-    if (it.p === "sorot") elSorotan.querySelectorAll(".rel").forEach(r => { r.hidden = r.dataset.k !== it.k; });
+    const baru = panel[it.p], lama = panelKini;
     elIsi.setAttribute("aria-label", it.nama);
-    if (panelKini === baru) { if (it.p === "sorot") pudar(baru); return; }
+    if (lama === baru && it.p !== "sorot") return;
     const tinggiLama = elIsi.offsetHeight;
+    if (it.p === "sorot") elSorotan.querySelectorAll(".rel").forEach(r => { r.hidden = r.dataset.k !== it.k; });
+    [elIsi, ...Object.values(panel)].forEach(el => el && el.getAnimations().forEach(x => { try { if (x.effect && x.effect.getTiming().iterations !== Infinity) x.finish(); } catch (e) {} }));   // hentikan animasi ganti panel sebelumnya
     Object.values(panel).forEach(p => { if (p) p.hidden = p !== baru; });
     panelKini = baru;
+    baru.querySelectorAll("[data-muncul]").forEach(m => m.classList.add("tampak"));
     if (it.p === "info") requestAnimationFrame(() => infoKe(infoKini(), false));
-    pudar(baru);
-    if (!KURANG_GERAK && tinggiLama && elIsi.animate) {
-      const tinggiBaru = elIsi.offsetHeight;
-      if (Math.abs(tinggiBaru - tinggiLama) > 2) elIsi.animate([{ height: tinggiLama + "px" }, { height: tinggiBaru + "px" }], { duration: 320, easing: "cubic-bezier(.2,.8,.3,1)" });
-    }
+    if (!GERAK || !halus || !elIsi.animate) return;
+    baru.animate([{ opacity: 0, transform: `translateX(${arah * 22}px)` }, { opacity: 1, transform: "none" }], { duration: 340, easing: "cubic-bezier(.2,.8,.3,1)" });
+    const tinggiBaru = elIsi.offsetHeight;
+    if (Math.abs(tinggiBaru - tinggiLama) > 2) elIsi.animate([{ height: tinggiLama + "px" }, { height: tinggiBaru + "px" }], { duration: 340, easing: "cubic-bezier(.2,.8,.3,1)" });
   }
-  function pudar(el){ if (!KURANG_GERAK && el && el.animate) el.animate([{ opacity: 0, transform: "translateY(10px)" }, { opacity: 1, transform: "none" }], { duration: 300, easing: "cubic-bezier(.2,.8,.3,1)" }); }
-  /* bangun ulang ikon (ganti bahasa / data berubah), pilihan yang sedang aktif dipertahankan */
   function segarkan(){
     const lamaId = ITEM[aktif] ? ITEM[aktif].id : null;
-    ITEM = daftarIsi(); elDial.textContent = "";
+    ITEM = daftarIsi();
+    elDial.querySelectorAll(".dial-item").forEach(b => b.remove());
     tombol = ITEM.map((it, i) => {
       const b = document.createElement("button"); b.type = "button"; b.className = "dial-item"; b.setAttribute("role", "tab"); b.tabIndex = -1;
       b.setAttribute("aria-label", it.nama); b.dataset.id = it.id;
-      b.innerHTML = `<span class="dial-ikon ${it.k ? "s-" + it.k : ""}">${it.ikon}</span><span class="dial-nama"></span>`;
+      b.innerHTML = `<span class="dial-ikon">${it.ikon}</span><span class="dial-nama"></span>`;
       b.querySelector(".dial-nama").textContent = it.nama;
       b.addEventListener("click", () => { if (!geserJauh) keIndeks(i); });
       elDial.appendChild(b); return b;
     });
-    // sebelum pengunjung memilih sendiri, roda selalu mulai dari isi pertama (Info & promo kalau ada)
-    let i = sudahDipilih && lamaId ? ITEM.findIndex(it => it.id === lamaId) : 0;
-    if (i < 0) i = 0;
-    pos = i; aktif = -1; gambar();
+    let i = sudahDipilih && lamaId ? ITEM.findIndex(it => it.id === lamaId) : 0; if (i < 0) i = 0;
+    pos = i; aktif = -1; panelKini = null; ukur();
+    clearTimeout(jedaPanel); tampilkan(ITEM[aktif], false);
   }
   /* geser dengan jari / mouse */
   let mulaiX = 0, mulaiPos = 0, jejak = [], tekan = false;
-  const jarak = () => Math.max(48, Math.sin(langkahDi(elDial.clientWidth) * Math.PI / 180) * jariDi(elDial.clientWidth));
+  const jarak = () => Math.max(46, Math.sin(langkahDi(L) * Math.PI / 180) * jariDi(L));
   elDial.addEventListener("pointerdown", e => { tekan = true; geserJauh = false; mulaiX = e.clientX; mulaiPos = pos; jejak = [[e.clientX, performance.now()]]; cancelAnimationFrame(anim); });
   elDial.addEventListener("pointermove", e => {
     if (!tekan) return; const dx = e.clientX - mulaiX;
-    if (Math.abs(dx) > 6 && !geserJauh) { geserJauh = true; sudahDipilih = true; elDial.classList.add("diseret"); try { elDial.setPointerCapture(e.pointerId); } catch (x) {} }
+    if (Math.abs(dx) > 6 && !geserJauh) { geserJauh = true; pilihSendiri(); elDial.classList.add("diseret"); try { elDial.setPointerCapture(e.pointerId); } catch (x) {} }
     if (!geserJauh) return;
     pos = mulaiPos - dx / jarak() * (RTL() ? -1 : 1); jejak.push([e.clientX, performance.now()]); if (jejak.length > 6) jejak.shift(); gambar();
   });
@@ -2992,26 +3037,29 @@ if (location.protocol.indexOf("http") === 0) {
   };
   elDial.addEventListener("pointerup", lepasJari); elDial.addEventListener("pointercancel", lepasJari);
   elDial.addEventListener("keydown", e => {
-    const maju = RTL() ? "ArrowLeft" : "ArrowRight", mundur = RTL() ? "ArrowRight" : "ArrowLeft";
-    if (e.key === maju || e.key === mundur) sudahDipilih = true;
-    if (e.key === maju) { e.preventDefault(); animasi(Math.round(pos) + 1); setTimeout(() => tombol[aktif] && tombol[aktif].focus({ preventScroll: true }), 20); }
-    if (e.key === mundur) { e.preventDefault(); animasi(Math.round(pos) - 1); setTimeout(() => tombol[aktif] && tombol[aktif].focus({ preventScroll: true }), 20); }
+    const k = RTL() ? { ArrowLeft: 1, ArrowRight: -1 } : { ArrowLeft: -1, ArrowRight: 1 };
+    if (k[e.key]) { e.preventDefault(); pilihSendiri(); animasi(Math.round(pos) + k[e.key]); setTimeout(() => tombol[aktif] && tombol[aktif].focus({ preventScroll: true }), 30); }
   });
-  addEventListener("resize", gambar);
-  /* sekali saja: roda sedikit bergoyang saat pertama terlihat, tanda bahwa ia bisa digeser */
-  if (!KURANG_GERAK && "IntersectionObserver" in window) {
+  let jedaUkur; addEventListener("resize", () => { clearTimeout(jedaUkur); jedaUkur = setTimeout(ukur, 80); });
+  /* daun bergoyang pelan sekali-sekali walau roda diam (hanya saat roda terlihat) */
+  if (GERAK) {
+    let terlihat = false;
+    new IntersectionObserver(es => { terlihat = es.some(e => e.isIntersecting); }).observe(elDial);
+    const goyang = () => { if (terlihat && !tekan && !document.hidden) sulur(langkahDi(L)); setTimeout(() => requestAnimationFrame(goyang), 60); };
+    goyang();
+  }
+  /* sekali saja: roda bergoyang saat pertama terlihat, tanda bisa diputar */
+  if (GERAK && "IntersectionObserver" in window) {
     const io = new IntersectionObserver(es => {
       if (!es.some(e => e.isIntersecting)) return; io.disconnect();
-      setTimeout(() => { if (tekan) return; const awal = pos; animasi(awal + .42); setTimeout(() => { if (!tekan) animasi(awal); }, 520); }, 600);
+      setTimeout(() => { if (tekan || sudahDipilih) return; const awal = pos; animasi(awal + .4); setTimeout(() => { if (!tekan && !sudahDipilih) animasi(awal); }, 520); }, 500);
     }, { threshold: .6 });
     io.observe(elDial);
   }
-  /* tautan "Cara pesan" di menu atas: putar roda ke Cara pesan lalu gulir ke roda */
   document.querySelectorAll('a[href="#cara"]').forEach(a => a.addEventListener("click", e => {
     e.preventDefault(); const i = ITEM.findIndex(it => it.id === "cara"); if (i >= 0) keIndeks(i);
-    elRoda.scrollIntoView({ behavior: ANIM ? "smooth" : "auto", block: "start" });
+    elRoda.scrollIntoView({ behavior: GERAK ? "smooth" : "auto", block: "start" });
   }));
-  /* ikut diperbarui setiap kali isi lain digambar ulang */
   const gs = gambarSorotan; gambarSorotan = function(){ gs(); segarkan(); };
   const gi = gambarInfo; gambarInfo = function(){ gi(); document.body.classList.remove("ada-info"); segarkan(); };
   const gk = gambarKategori; gambarKategori = function(){ gk(); segarkan(); };
@@ -3019,6 +3067,8 @@ if (location.protocol.indexOf("http") === 0) {
   segarkan();
   window.roda = { segarkan, pilih: id => { const i = ITEM.findIndex(it => it.id === id); if (i >= 0) keIndeks(i); }, item: () => ITEM.map(i => i.id), aktif: () => ITEM[aktif] && ITEM[aktif].id };
 })();
+
+
 
 </script>
 </body>
