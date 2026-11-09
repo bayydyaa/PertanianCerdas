@@ -1282,6 +1282,7 @@ d.classList.add("anim");setTimeout(function(){if(!window.__amtSiap)d.classList.r
 const WARNA = [["#0e8f8a","#0a5f5c"],["#d9822b","#8f4d10"],["#5b62c9","#3a3f8f"],["#c8443c","#8c2a24"],["#2f9b52","#1c6a35"],["#5f6b73","#3b454b"],["#8a6a3b","#5e4623"],["#7aa82c","#4a6d15"]];
 const NOMOR_WA = "6282353333662";
 const KOORDINAT = "-0.8353266,119.8889759";
+const NAMA_PETA = "Toko Pertanian CV Azzahra Mutiara Tani, Jl. Soekarno Hatta, Tondo, Palu";
 /* Foto asli: taruh file di folder "foto/" di sebelah index.html dengan nama sesuai
    daftar-nama-foto.txt (contoh: foto/gramoxone-276sl.jpg). Kalau filenya ada, otomatis
    dipakai; kalau belum ada, tampil ilustrasi kemasan. Ubah ke false untuk mematikan. */
@@ -2820,7 +2821,7 @@ function terapkanBahasa(kode, simpanPilihan){
   $("kodeBahasa").textContent = BAHASA[bahasa].kode;
   $("bahasa").value = bahasa;
   bangunIndeks();
-  const peta = $("peta"), src = `https://www.google.com/maps?q=${KOORDINAT}&z=17&hl=${BAHASA[bahasa].peta}&output=embed`;
+  const peta = $("peta"), src = `https://www.google.com/maps?q=${encodeURIComponent(NAMA_PETA)}&ll=${KOORDINAT}&z=18&hl=${BAHASA[bahasa].peta}&output=embed`;   // pin memakai tempat terdaftar di Google Maps, bukan titik koordinat
   if (peta.getAttribute("src") !== src) peta.setAttribute("src", src);
   angkaSekarang = sudahSiap ? angkaSekarang : null;
   gambarKategori(); saring(); gambarDaftar(); gambarSorotan(); gambarInfo();
